@@ -117,7 +117,7 @@ def placeObjects():
         objects['endLadders'].append(objects['ladders'][i][len(objects['ladders'][i]) - 1])
         for j in range(len(objects['ladders'][i])):
             print(objects['ladders'][i][j][0], objects['ladders'][i][j][1])
-            Terrain.itemconfigure(carreau[objects['ladders'][i][j][1]][objects['ladders'][i][j][0]], fill="green", outline='grey')
+            Terrain.itemconfigure(carreau[objects['ladders'][i][j][1]][objects['ladders'][i][j][0]], fill="green")
     print(objects['startLadders'])
     print(objects['endLadders'])
 
