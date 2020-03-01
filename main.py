@@ -11,104 +11,135 @@ objects = {
     'startSnakes': [],
     'endSnakes': [],
     'graphicalLadders': [],
-    'differentladders': 0,
-    'differentsnakes': 0,
     'simtab': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 }
 
 
+def isEquals(elem1, elem2):
+    if elem1[0] == elem2[0] and elem1[1] == elem2[1]:
+        return True
+    else:
+        return False
+
+
+def tabExists(elems, elem, x, y, reverse):
+    if reverse:
+        tabtemp = [objects['simtab'][elem[0]] + x, objects['simtab'][elem[1]] + y]
+    else:
+        tabtemp = [elem[0] + x, elem[1] + y]
+    if elems == objects['ladders'] or elems == objects['snakes']:
+        for elen in elems:
+            for el in elen:
+                if el[0] == tabtemp[0] and el[1] == tabtemp[1]:
+                    return True
+        return False
+    else:
+        for el in elems:
+            if el[0] == tabtemp[0] and el[1] == tabtemp[1]:
+                return True
+        return False
+
+
 def genLevel():
-    while objects['differentsnakes'] == 0 and objects['differentladders'] == 0:
-        objects['snakes'] = []
-        objects['ladders'] = []
-        for i in range(random.randint(1, 4)):
-            x = random.randint(0, 5)
-            y = random.randint(0, 5)
-            taille = random.randint(2, 4)
-            objects['snakes'].append([[abs(x), y + j] for j in range(taille)])
-            for j in range(len(objects['snakes'][i])):
-                if j % 2 == 1 and j != 0:
-                    objects['snakes'][i][j][0] = objects['simtab'][objects['snakes'][i][j][0]]
-        for i in range(random.randint(1, 4)):
-            x = random.randint(0, 5)
-            y = random.randint(0, 5)
-            taille = random.randint(2, 4)
-            objects['ladders'].append([[abs(x), y + j] for j in range(taille)])
-            for j in range(len(objects['ladders'][i])):
-                if j % 2 == 1 and j != 0:
-                    objects['ladders'][i][j][0] = objects['simtab'][objects['ladders'][i][j][0]]
-        print(objects)
+    objects['snakes'] = []
+    objects['ladders'] = []
+    for i in range(random.randint(1, 4)):
+        x = random.randint(0, 5)
+        y = random.randint(0, 5)
+        taille = random.randint(2, 4)
+        objects['snakes'].append([[abs(x), y + j] for j in range(taille)])
+        for j in range(len(objects['snakes'][i])):
+            if j % 2 == 1 and j != 0:
+                objects['snakes'][i][j][0] = objects['simtab'][objects['snakes'][i][j][0]]
+    for i in range(random.randint(1, 4)):
+        x = random.randint(0, 5)
+        y = random.randint(0, 5)
+        taille = random.randint(2, 4)
+        objects['ladders'].append([[abs(x), y + j] for j in range(taille)])
+        for j in range(len(objects['ladders'][i])):
+            if j % 2 == 1 and j != 0:
+                objects['ladders'][i][j][0] = objects['simtab'][objects['ladders'][i][j][0]]
+    print(objects)
+    for elems in objects['ladders']:
+        for elem in elems:
+            if objects['ladders'].count(elem) > 1:
+                genLevel()
+                return
+            else:
+                if (tabExists(objects['ladders'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or\
+                        (tabExists(objects['ladders'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0, False)) or\
+                        (tabExists(objects['ladders'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1, False)) or\
+                        (tabExists(objects['ladders'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1, False)) or\
+                        (tabExists(objects['ladders'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1, False)) or\
+                        (tabExists(objects['ladders'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1, False)) or\
+                        (tabExists(objects['ladders'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0, False)) or\
+                        (tabExists(objects['ladders'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1, False)) or \
+                        (tabExists(objects['ladders'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
+                                                                                        True)) or \
+                        (tabExists(objects['ladders'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
+                                                                                        True)) or \
+                        (tabExists(objects['ladders'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
+                                                                                        True)) or \
+                        (tabExists(objects['ladders'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
+                                                                                         True)) or \
+                        (tabExists(objects['ladders'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
+                                                                                         True)) or \
+                        (tabExists(objects['ladders'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
+                                                                                         True)) or \
+                        (tabExists(objects['ladders'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
+                                                                                         True)) or \
+                        (tabExists(objects['ladders'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
+                                                                                          True)):
+                    genLevel()
+                    return
+
+    for elems in objects['snakes']:
+        for elem in elems:
+            if objects['snakes'].count(elem) > 1:
+                genLevel()
+                return
+            else:
+                if (tabExists(objects['snakes'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or \
+                        (tabExists(objects['snakes'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0,
+                                                                                            False)) or \
+                        (tabExists(objects['snakes'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1,
+                                                                                            False)) or \
+                        (tabExists(objects['snakes'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1,
+                                                                                             False)) or \
+                        (tabExists(objects['snakes'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1,
+                                                                                             False)) or \
+                        (tabExists(objects['snakes'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1,
+                                                                                             False)) or \
+                        (tabExists(objects['snakes'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0,
+                                                                                             False)) or \
+                        (tabExists(objects['snakes'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1,
+                                                                                              False)) or \
+                        (tabExists(objects['snakes'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
+                                                                                           True)) or \
+                        (tabExists(objects['snakes'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
+                                                                                           True)) or \
+                        (tabExists(objects['snakes'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
+                                                                                           True)) or \
+                        (tabExists(objects['snakes'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
+                                                                                            True)) or \
+                        (tabExists(objects['snakes'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
+                                                                                            True)) or \
+                        (tabExists(objects['snakes'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
+                                                                                            True)) or \
+                        (tabExists(objects['snakes'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
+                                                                                            True)) or \
+                        (tabExists(objects['snakes'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
+                                                                                             True)):
+                    genLevel()
+                    return
         for elems in objects['ladders']:
             for elem in elems:
-                if np.array_equal(np.isin(np.array(objects['ladders']), np.array(elem)), np.array([True, True])):
-                    objects['differentladders'] = 0
-                else:
-                    print(np.array_equal(np.isin(np.array(objects['ladders']), np.sum([elem, [1, 1]], axis=0)),
-                                         np.array([True, True])))
-                    print(np.array_equal(np.isin(np.array(objects['ladders']), np.sum([elem, [0, 1]], axis=0)),
-                                         np.array([True, True])))
-                    print(np.array_equal(np.isin(np.array(objects['ladders']), np.sum([elem, [1, 0]], axis=0)),
-                                         np.array([True, True])))
-                    print(np.array_equal(np.isin(np.array(objects['ladders']), np.sum([elem, [-1, -1]], axis=0)),
-                                         np.array([True, True])))
-                    print(np.array_equal(np.isin(np.array(objects['ladders']), np.sum([elem, [0, -1]], axis=0)),
-                                         np.array([True, True])))
-                    print(np.array_equal(np.isin(np.array(objects['ladders']), np.sum([elem, [-1, 0]], axis=0)),
-                                         np.array([True, True])))
-                    if np.array(objects['ladders'])[
-                        np.isin(np.array(objects['ladders']), np.sum([[1,  - objects['simtab'][elem[1]] + 1], [1,  - objects['simtab'][elem[0]] + 1]], axis=0))].size == 0 and \
-                            np.array(objects['ladders'])[
-                                np.isin(np.array(objects['ladders']), np.sum([[1,  - objects['simtab'][elem[1]]], [1,  - objects['simtab'][elem[0]] + 1]], axis=0))].size == 0 and \
-                            np.array(objects['ladders'])[
-                                np.isin(np.array(objects['ladders']), np.sum([[1,  - objects['simtab'][elem[1]] + 1], [1,  - objects['simtab'][elem[0]]]], axis=0))].size == 0 \
-                            and np.array(objects['ladders'])[
-                            np.isin(np.array(objects['ladders']), np.sum([[1, - objects['simtab'][elem[1]] - 1], [1, - objects['simtab'][elem[0]] - 1]], axis=0))].size == 0 and \
-                                    np.array(objects['ladders'])[
-                            np.isin(np.array(objects['ladders']), np.sum([[1, - objects['simtab'][elem[1]]], [1, - objects['simtab'][elem[0]] - 1]], axis=0))].size == 0 and \
-                                    np.array(objects['ladders'])[
-                            np.isin(np.array(objects['ladders']), np.sum([[1, - objects['simtab'][elem[1]] - 1], [1, - objects['simtab'][elem[0]]]], axis=0))].size == 0 \
-                            and np.array(objects['ladders'])[
-                        np.isin(np.array(objects['ladders']), np.sum([elem, [0, 1]], axis=0))].size == 0 and \
-                            np.array(objects['ladders'])[
-                                np.isin(np.array(objects['ladders']), np.sum([elem, [1, 0]], axis=0))].size == 0 and \
-                            np.array(objects['ladders'])[
-                                np.isin(np.array(objects['ladders']), np.sum([elem, [1, 1]], axis=0))].size == 0:
-                        objects['differentladders'] = 1
-
-        for elems in objects['snakes']:
-            for elem in elems:
-                if objects['differentsnakes'] != 1:
-                    if np.array_equal(np.isin(np.array(objects['snakes']), np.array(elem)), np.array([True, True])):
-                        objects['differentsnakes'] = 0
-                    else:
-                        if np.array(objects['snakes'])[
-                                np.isin(np.array(objects['snakes']), np.sum([elem, [1, 1]], axis=0))].size == 0 and \
-                                np.array(objects['snakes'])[
-                                    np.isin(np.array(objects['snakes']), np.sum([elem, [0, 1]], axis=0))].size == 0 and \
-                                np.array(objects['snakes'])[
-                                    np.isin(np.array(objects['snakes']), np.sum([elem, [1, 0]], axis=0))].size == 0 \
-                                and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [1, 1]], axis=0))].size != 0 and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [0, 1]], axis=0))].size != 0 and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [1, 0]], axis=0))].size != 0 \
-                                and np.array(objects['snakes'])[
-                                np.isin(np.array(objects['snakes']), np.sum([elem, [2, 2]], axis=0))].size == 0 and \
-                                np.array(objects['snakes'])[
-                                    np.isin(np.array(objects['snakes']), np.sum([elem, [2, 0]], axis=0))].size == 0 and \
-                                np.array(objects['snakes'])[
-                                    np.isin(np.array(objects['snakes']), np.sum([elem, [0, 2]], axis=0))].size == 0 \
-                                and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [2, 2]], axis=0))].size != 0 and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [0, 2]], axis=0))].size != 0 and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [2, 0]], axis=0))].size != 0 \
-                                and np.array(objects['snakes'])[
-                                np.isin(np.array(objects['snakes']), np.sum([elem, [1, 2]], axis=0))].size == 0 and \
-                                np.array(objects['snakes'])[
-                                    np.isin(np.array(objects['snakes']), np.sum([elem, [2, 1]], axis=0))].size == 0 \
-                                and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [1, 2]], axis=0))].size != 0 and np.array(elems)[
-                                np.isin(np.array(elems), np.sum([elem, [2, 1]], axis=0))].size != 0:
-                            objects['differentladders'] = 1
+                for elems2 in objects['snakes']:
+                    for elem2 in elems2:
+                        if isEquals(elem, elem2):
+                            objects['different'] = 1
+                            genLevel()
+                            return
 
 
 def placeObjects():
@@ -131,9 +162,9 @@ def placeObjects():
 
 fenetre = Tk()
 fenetre.title("Snakes & ladders")
-fenetre.geometry("600x600")
+fenetre.geometry("800x600")
 Terrain = Canvas(fenetre, height=600, width=600)
-Terrain.pack()
+Terrain.pack(anchor='nw')
 carreau = [[Terrain.create_rectangle(i * 60, j * 60, (i + 1) * 60, (j + 1) * 60, fill="#FFFFFF")
             for i in range(10)] for j in range(10)]
 labels = [[Terrain.create_text(i * 60 + 50, j * 60 + 10) for i in range(10)] for j in range(10)]
@@ -147,4 +178,5 @@ for i in range(10):
         Terrain.itemconfigure(labels[i][j], text=(j + 1) + (i * 10))
 genLevel()
 placeObjects()
+player = [Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='')]
 fenetre.mainloop()
