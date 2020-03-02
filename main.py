@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter.font as tkfont
 import random
 import math
 import numpy as np
@@ -11,7 +12,8 @@ objects = {
     'startSnakes': [],
     'endSnakes': [],
     'graphicalLadders': [],
-    'simtab': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    'simtab': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+    'playerline': 0
 }
 
 
@@ -24,7 +26,7 @@ def isEquals(elem1, elem2):
 
 def tabExists(elems, elem, x, y, reverse):
     if reverse:
-        tabtemp = [objects['simtab'][elem[0]] + x, objects['simtab'][elem[1]] + y]
+        tabtemp = [objects['simtab'][elem[0]] + x, elem[1] + y]
     else:
         tabtemp = [elem[0] + x, elem[1] + y]
     if elems == objects['ladders'] or elems == objects['snakes']:
@@ -66,30 +68,37 @@ def genLevel():
                 genLevel()
                 return
             else:
-                if (tabExists(objects['ladders'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or\
-                        (tabExists(objects['ladders'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0, False)) or\
-                        (tabExists(objects['ladders'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1, False)) or\
-                        (tabExists(objects['ladders'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1, False)) or\
-                        (tabExists(objects['ladders'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1, False)) or\
-                        (tabExists(objects['ladders'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1, False)) or\
-                        (tabExists(objects['ladders'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0, False)) or\
-                        (tabExists(objects['ladders'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1, False)) or \
+                if (tabExists(objects['ladders'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or \
+                        (tabExists(objects['ladders'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0,
+                                                                                            False)) or \
+                        (tabExists(objects['ladders'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1,
+                                                                                            False)) or \
+                        (tabExists(objects['ladders'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1,
+                                                                                             False)) or \
+                        (tabExists(objects['ladders'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1,
+                                                                                             False)) or \
+                        (tabExists(objects['ladders'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1,
+                                                                                             False)) or \
+                        (tabExists(objects['ladders'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0,
+                                                                                             False)) or \
+                        (tabExists(objects['ladders'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1,
+                                                                                              False)) or \
                         (tabExists(objects['ladders'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
-                                                                                        True)) or \
+                                                                                           True)) or \
                         (tabExists(objects['ladders'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
-                                                                                        True)) or \
+                                                                                           True)) or \
                         (tabExists(objects['ladders'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
-                                                                                        True)) or \
+                                                                                           True)) or \
                         (tabExists(objects['ladders'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
-                                                                                         True)) or \
+                                                                                            True)) or \
                         (tabExists(objects['ladders'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
-                                                                                         True)) or \
+                                                                                            True)) or \
                         (tabExists(objects['ladders'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
-                                                                                         True)) or \
+                                                                                            True)) or \
                         (tabExists(objects['ladders'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
-                                                                                         True)) or \
+                                                                                            True)) or \
                         (tabExists(objects['ladders'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
-                                                                                          True)):
+                                                                                             True)):
                     genLevel()
                     return
 
@@ -101,35 +110,35 @@ def genLevel():
             else:
                 if (tabExists(objects['snakes'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or \
                         (tabExists(objects['snakes'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0,
-                                                                                            False)) or \
+                                                                                           False)) or \
                         (tabExists(objects['snakes'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1,
-                                                                                            False)) or \
+                                                                                           False)) or \
                         (tabExists(objects['snakes'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1,
-                                                                                             False)) or \
+                                                                                            False)) or \
                         (tabExists(objects['snakes'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1,
-                                                                                             False)) or \
+                                                                                            False)) or \
                         (tabExists(objects['snakes'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1,
-                                                                                             False)) or \
+                                                                                            False)) or \
                         (tabExists(objects['snakes'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0,
-                                                                                             False)) or \
+                                                                                            False)) or \
                         (tabExists(objects['snakes'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1,
-                                                                                              False)) or \
+                                                                                             False)) or \
                         (tabExists(objects['snakes'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
-                                                                                           True)) or \
+                                                                                          True)) or \
                         (tabExists(objects['snakes'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
-                                                                                           True)) or \
+                                                                                          True)) or \
                         (tabExists(objects['snakes'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
-                                                                                           True)) or \
+                                                                                          True)) or \
                         (tabExists(objects['snakes'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
-                                                                                            True)) or \
+                                                                                           True)) or \
                         (tabExists(objects['snakes'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
-                                                                                            True)) or \
+                                                                                           True)) or \
                         (tabExists(objects['snakes'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
-                                                                                            True)) or \
+                                                                                           True)) or \
                         (tabExists(objects['snakes'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
-                                                                                            True)) or \
+                                                                                           True)) or \
                         (tabExists(objects['snakes'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
-                                                                                             True)):
+                                                                                            True)):
                     genLevel()
                     return
         for elems in objects['ladders']:
@@ -153,17 +162,78 @@ def placeObjects():
     print(objects['endLadders'])
 
     for i in range(len(objects['snakes'])):
-        objects['startSnakes'].append(objects['snakes'][i][0])
-        objects['endSnakes'].append(objects['snakes'][i][len(objects['snakes'][i]) - 1])
+        if objects['snakes'][i][0][1] % 2 != 0:
+            objects['startSnakes'].append([objects['simtab'][objects['snakes'][i][0][0]], objects['simtab'][objects['snakes'][i][0][1]]])
+        else:
+            objects['startSnakes'].append(objects['snakes'][i][0])
+        if objects['snakes'][i][len(objects['snakes'][i]) - 1][1] % 2 != 0:
+            objects['endSnakes'].append([objects['simtab'][objects['snakes'][i][len(objects['snakes'][i]) - 1][0]], objects['simtab'][objects['snakes'][i][len(objects['snakes'][i]) - 1][1]]])
+        else:
+            objects['endSnakes'].append(objects['snakes'][i][len(objects['snakes'][i]) - 1])
         for j in range(len(objects['snakes'][i])):
             print(objects['snakes'][i][j][0], objects['snakes'][i][j][1])
             Terrain.itemconfigure(carreau[objects['snakes'][i][j][1]][objects['snakes'][i][j][0]], fill="red")
 
 
+def onDiceClick(event):
+    rd_dice_face = random.randint(1, 1)
+    Terrain.itemconfigure(dice_face, text=rd_dice_face)
+    Terrain.tag_unbind("dice_face", '<Button-1>')
+    Terrain.tag_unbind("dice", "<Button-1>")
+    moveplayer(rd_dice_face)
+    detectCollision()
+
+
+def moveplayer(rd):
+    cases = 0
+    unbind_final = 0
+    print(Terrain.coords(player[0]))
+    if objects['playerline'] % 2 == 0:
+        if Terrain.coords(player[0])[0] + rd * 60 <= 550 and Terrain.coords(player[0])[2] + rd * 60 <= 590:
+            Terrain.move(player[0], rd * 60, 0)
+        else:
+            while Terrain.coords(player[0])[0] < 550:
+                Terrain.move(player[0], 60, 0)
+                cases += 1
+            Terrain.move(player[0], -(abs(((rd - cases) - 1) * 60)), -60)
+            objects['playerline'] += 1
+    else:
+        if Terrain.coords(player[0])[1] == 10:
+            if Terrain.coords(player[0])[0] - rd * 60 < 10 and Terrain.coords(player[0])[2] - rd * 60 < 50:
+                while Terrain.coords(player[0])[0] > 10:
+                    Terrain.move(player[0], -60, 0)
+                    unbind_final = 1
+            elif Terrain.coords(player[0])[0] - rd * 60 == 10 and Terrain.coords(player[0])[2] - rd * 60 == 50:
+                Terrain.move(player[0], -(rd * 60), 0)
+                unbind_final = 1
+            else:
+                Terrain.move(player[0], -(rd * 60), 0)
+        else:
+            if Terrain.coords(player[0])[0] - rd * 60 >= 10 and Terrain.coords(player[0])[2] - rd * 60 >= 50:
+                Terrain.move(player[0], -(rd * 60), 0)
+            else:
+                while Terrain.coords(player[0])[0] > 10:
+                    Terrain.move(player[0], -60, 0)
+                    cases += 1
+                Terrain.move(player[0], abs(((rd - cases) - 1) * 60), -60)
+                objects['playerline'] += 1
+    if unbind_final == 0:
+        Terrain.tag_bind("dice_face", '<Button-1>', onDiceClick)
+        Terrain.tag_bind("dice", "<Button-1>", onDiceClick)
+
+
+def detectCollision():
+    for i in range(len(objects['startSnakes'])):
+        if Terrain.coords(player[0])[0] - 10 == objects['startSnakes'][i][0] * 60 and \
+                Terrain.coords(player[0])[1] - 10 == objects['startSnakes'][i][1] * 60:
+            Terrain.move(player[0], 0,
+                         ((objects['endSnakes'][i][1] * 60) - Terrain.coords(player[0])[1]) - 50)
+
+
 fenetre = Tk()
 fenetre.title("Snakes & ladders")
 fenetre.geometry("800x600")
-Terrain = Canvas(fenetre, height=600, width=600)
+Terrain = Canvas(fenetre, height=600, width=800)
 Terrain.pack(anchor='nw')
 carreau = [[Terrain.create_rectangle(i * 60, j * 60, (i + 1) * 60, (j + 1) * 60, fill="#FFFFFF")
             for i in range(10)] for j in range(10)]
@@ -179,4 +249,9 @@ for i in range(10):
 genLevel()
 placeObjects()
 player = [Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='')]
+dice = Terrain.create_rectangle(655, 25, 750, 120, fill="white", tags="dice")
+dice_face = Terrain.create_text(702.5, 72.5, fill="black", font=tkfont.Font(family='Helvetica', size=36, weight='bold'),
+                                tags="dice_face")
+Terrain.tag_bind("dice_face", '<Button-1>', onDiceClick)
+Terrain.tag_bind("dice", "<Button-1>", onDiceClick)
 fenetre.mainloop()
