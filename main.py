@@ -3,6 +3,7 @@ import tkinter.font as tkfont
 import random
 import math
 import numpy as np
+import time
 
 objects = {
     'snakes': [],
@@ -153,8 +154,15 @@ def genLevel():
 
 def placeObjects():
     for i in range(len(objects['ladders'])):
-        objects['startLadders'].append(objects['ladders'][i][0])
-        objects['endLadders'].append(objects['ladders'][i][len(objects['ladders'][i]) - 1])
+        if objects['ladders'][i][0][1] % 2 == 0:
+            objects['startLadders'].append([objects['simtab'][objects['ladders'][i][0][0]], objects['ladders'][i][0][1]])
+        else:
+            objects['startLadders'].append(objects['ladders'][i][0])
+        if objects['ladders'][i][len(objects['ladders'][i]) - 1][1] % 2 == 0:
+            objects['endLadders'].append([objects['simtab'][objects['ladders'][i][len(objects['ladders'][i]) - 1][0]],
+                                         objects['ladders'][i][len(objects['ladders'][i]) - 1][1]])
+        else:
+            objects['endLadders'].append(objects['ladders'][i][len(objects['ladders'][i]) - 1])
         for j in range(len(objects['ladders'][i])):
             print(objects['ladders'][i][j][0], objects['ladders'][i][j][1])
             Terrain.itemconfigure(carreau[objects['ladders'][i][j][1]][objects['ladders'][i][j][0]], fill="green")
@@ -162,12 +170,12 @@ def placeObjects():
     print(objects['endLadders'])
 
     for i in range(len(objects['snakes'])):
-        if objects['snakes'][i][0][1] % 2 != 0:
-            objects['startSnakes'].append([objects['simtab'][objects['snakes'][i][0][0]], objects['simtab'][objects['snakes'][i][0][1]]])
+        if objects['snakes'][i][0][1] % 2 == 0:
+            objects['startSnakes'].append([objects['simtab'][objects['snakes'][i][0][0]], objects['snakes'][i][0][1]])
         else:
             objects['startSnakes'].append(objects['snakes'][i][0])
-        if objects['snakes'][i][len(objects['snakes'][i]) - 1][1] % 2 != 0:
-            objects['endSnakes'].append([objects['simtab'][objects['snakes'][i][len(objects['snakes'][i]) - 1][0]], objects['simtab'][objects['snakes'][i][len(objects['snakes'][i]) - 1][1]]])
+        if objects['snakes'][i][len(objects['snakes'][i]) - 1][1] % 2 == 0:
+            objects['endSnakes'].append([objects['simtab'][objects['snakes'][i][len(objects['snakes'][i]) - 1][0]], objects['snakes'][i][len(objects['snakes'][i]) - 1][1]])
         else:
             objects['endSnakes'].append(objects['snakes'][i][len(objects['snakes'][i]) - 1])
         for j in range(len(objects['snakes'][i])):
@@ -181,6 +189,7 @@ def onDiceClick(event):
     Terrain.tag_unbind("dice_face", '<Button-1>')
     Terrain.tag_unbind("dice", "<Button-1>")
     moveplayer(rd_dice_face)
+    time.sleep(0.100)
     detectCollision()
 
 
@@ -223,11 +232,26 @@ def moveplayer(rd):
 
 
 def detectCollision():
-    for i in range(len(objects['startSnakes'])):
-        if Terrain.coords(player[0])[0] - 10 == objects['startSnakes'][i][0] * 60 and \
-                Terrain.coords(player[0])[1] - 10 == objects['startSnakes'][i][1] * 60:
-            Terrain.move(player[0], 0,
-                         ((objects['endSnakes'][i][1] * 60) - Terrain.coords(player[0])[1]) - 50)
+    for i in range(len(objects['endSnakes'])):
+        print(objects['endSnakes'])
+        print(objects['endSnakes'][i])
+        print(objects['startSnakes'])
+        print(objects['startSnakes'][i])
+        print(Terrain.coords(player[0]))
+        if int(Terrain.coords(player[0])[0]) == 600 - ((objects['endSnakes'][i][0] * 60)+50):
+                if int(Terrain.coords(player[0])[1]) == 600 - ((objects['endSnakes'][i][1] * 60)+50):
+                    Terrain.move(player[0], 0, (600 - ((objects['startSnakes'][i][1] * 60)+50)) - int(Terrain.coords(player[0])[1]))
+                    objects['playerline'] = (int(Terrain.coords(player[0])[1])+50)/60
+    for i in range(len(objects['startLadders'])):
+        print(objects['endLadders'])
+        print(objects['endLadders'][i])
+        print(objects['startLadders'])
+        print(objects['startLadders'][i])
+        print(Terrain.coords(player[0]))
+        if int(Terrain.coords(player[0])[0]) == 600 - ((objects['startLadders'][i][0] * 60)+50):
+                if int(Terrain.coords(player[0])[1]) == 600 - ((objects['startLadders'][i][1] * 60)+50):
+                    Terrain.move(player[0], 0, (600 - ((objects['endLadders'][i][1] * 60)+50)) - int(Terrain.coords(player[0])[1]))
+                    objects['playerline'] = (int(Terrain.coords(player[0])[1])+50)/60
 
 
 fenetre = Tk()
