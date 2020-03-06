@@ -43,239 +43,312 @@ def tabExists(elems, elem, x, y, reverse):
         return False
 
 
-def genLevel():
-    objects['snakes'] = []
-    objects['ladders'] = []
-    for i in range(random.randint(1, 4)):
-        x = random.randint(0, 5)
-        y = random.randint(0, 5)
-        taille = random.randint(2, 4)
-        objects['snakes'].append([[abs(x), y + j] for j in range(taille)])
-        for j in range(len(objects['snakes'][i])):
-            if j % 2 == 1 and j != 0:
-                objects['snakes'][i][j][0] = objects['simtab'][objects['snakes'][i][j][0]]
-    for i in range(random.randint(1, 4)):
-        x = random.randint(0, 5)
-        y = random.randint(0, 5)
-        taille = random.randint(2, 4)
-        objects['ladders'].append([[abs(x), y + j] for j in range(taille)])
-        for j in range(len(objects['ladders'][i])):
-            if j % 2 == 1 and j != 0:
-                objects['ladders'][i][j][0] = objects['simtab'][objects['ladders'][i][j][0]]
-    print(objects)
-    for elems in objects['ladders']:
-        for elem in elems:
-            if objects['ladders'].count(elem) > 1:
-                genLevel()
-                return
-            else:
-                if (tabExists(objects['ladders'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or \
-                        (tabExists(objects['ladders'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0,
-                                                                                            False)) or \
-                        (tabExists(objects['ladders'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1,
-                                                                                            False)) or \
-                        (tabExists(objects['ladders'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1,
-                                                                                             False)) or \
-                        (tabExists(objects['ladders'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1,
-                                                                                             False)) or \
-                        (tabExists(objects['ladders'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1,
-                                                                                             False)) or \
-                        (tabExists(objects['ladders'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0,
-                                                                                             False)) or \
-                        (tabExists(objects['ladders'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1,
-                                                                                              False)) or \
-                        (tabExists(objects['ladders'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
-                                                                                           True)) or \
-                        (tabExists(objects['ladders'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
-                                                                                           True)) or \
-                        (tabExists(objects['ladders'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
-                                                                                           True)) or \
-                        (tabExists(objects['ladders'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
-                                                                                            True)) or \
-                        (tabExists(objects['ladders'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
-                                                                                            True)) or \
-                        (tabExists(objects['ladders'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
-                                                                                            True)) or \
-                        (tabExists(objects['ladders'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
-                                                                                            True)) or \
-                        (tabExists(objects['ladders'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
-                                                                                             True)):
-                    genLevel()
-                    return
+class MAINGAME():
+    def __init__(self, PlayerNumber):
+        self.playerNumber = PlayerNumber
+        self.fenetre = Tk()
+        self.fenetre.title("Snakes & Ladders")
+        self.fenetre.geometry("800x600")
+        self.Terrain = Canvas(self.fenetre, height=600, width=800)
+        self.Terrain.pack(anchor='nw')
+        self.carreau = [[self.Terrain.create_rectangle(i * 60, j * 60, (i + 1) * 60, (j + 1) * 60, fill="#FFFFFF")
+                    for i in range(10)] for j in range(10)]
+        self.labels = [[self.Terrain.create_text(i * 60 + 50, j * 60 + 10) for i in range(10)] for j in range(10)]
+        self.labels.reverse()
+        self.carreau.reverse()
+        for i in range(1, 10, 2):
+            self.labels[i].reverse()
+            self.carreau[i].reverse()
+        for i in range(10):
+            for j in range(10):
+                self.Terrain.itemconfigure(self.labels[i][j], text=(j + 1) + (i * 10))
+        self.genLevel()
+        self.placeObjects()
+        if self.playerNumber == 1:
+            self.player = [self.Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='')]
+        elif self.playerNumber == 2:
+            self.player = [self.Terrain.create_oval(4, 560, 24, 580, fill="blue", outline=''),
+                    self.Terrain.create_oval(36, 560, 56, 580, fill="red", outline='')]
+        elif self.playerNumber == 3:
+            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline=''),
+                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline=''),
+                           self.Terrain.create_oval(24, 580, 34, 590, fill="green", outline='')]
+        else:
+            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline=''),
+                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline=''),
+                           self.Terrain.create_oval(14, 580, 24, 590, fill="green", outline=''),
+                           self.Terrain.create_oval(36, 580, 46, 590, fill="yellow", outline='')]
+        self.dice = self.Terrain.create_rectangle(655, 25, 750, 120, fill="white", tags="dice")
+        self.dice_face = self.Terrain.create_text(702.5, 72.5, fill="black", font=tkfont.Font(family='Helvetica', size=36, weight='bold'),
+                                        tags="dice_face")
+        self.playerturnlabel = self.Terrain.create_text(702.5, 130, text="Au tour du joueur 1")
+        self.playerturn = 0
+        self.Terrain.tag_bind("dice_face", '<Button-1>', self.onDiceClick)
+        self.Terrain.tag_bind("dice", "<Button-1>", self.onDiceClick)
+        self.fenetre.mainloop()
 
-    for elems in objects['snakes']:
-        for elem in elems:
-            if objects['snakes'].count(elem) > 1:
-                genLevel()
-                return
-            else:
-                if (tabExists(objects['snakes'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or \
-                        (tabExists(objects['snakes'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0,
-                                                                                           False)) or \
-                        (tabExists(objects['snakes'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1,
-                                                                                           False)) or \
-                        (tabExists(objects['snakes'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1,
-                                                                                            False)) or \
-                        (tabExists(objects['snakes'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1,
-                                                                                            False)) or \
-                        (tabExists(objects['snakes'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1,
-                                                                                            False)) or \
-                        (tabExists(objects['snakes'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0,
-                                                                                            False)) or \
-                        (tabExists(objects['snakes'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1,
-                                                                                             False)) or \
-                        (tabExists(objects['snakes'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
-                                                                                          True)) or \
-                        (tabExists(objects['snakes'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
-                                                                                          True)) or \
-                        (tabExists(objects['snakes'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
-                                                                                          True)) or \
-                        (tabExists(objects['snakes'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
-                                                                                           True)) or \
-                        (tabExists(objects['snakes'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
-                                                                                           True)) or \
-                        (tabExists(objects['snakes'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
-                                                                                           True)) or \
-                        (tabExists(objects['snakes'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
-                                                                                           True)) or \
-                        (tabExists(objects['snakes'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
-                                                                                            True)):
-                    genLevel()
-                    return
+    def genLevel(self):
+        objects['snakes'] = []
+        objects['ladders'] = []
+        for i in range(random.randint(1, 4)):
+            x = random.randint(0, 5)
+            y = random.randint(0, 5)
+            taille = random.randint(2, 4)
+            objects['snakes'].append([[abs(x), y + j] for j in range(taille)])
+            for j in range(len(objects['snakes'][i])):
+                if j % 2 == 1 and j != 0:
+                    objects['snakes'][i][j][0] = objects['simtab'][objects['snakes'][i][j][0]]
+        for i in range(random.randint(1, 4)):
+            x = random.randint(0, 5)
+            y = random.randint(0, 5)
+            taille = random.randint(2, 4)
+            objects['ladders'].append([[abs(x), y + j] for j in range(taille)])
+            for j in range(len(objects['ladders'][i])):
+                if j % 2 == 1 and j != 0:
+                    objects['ladders'][i][j][0] = objects['simtab'][objects['ladders'][i][j][0]]
+        print(objects)
         for elems in objects['ladders']:
             for elem in elems:
-                for elems2 in objects['snakes']:
-                    for elem2 in elems2:
-                        if isEquals(elem, elem2):
-                            objects['different'] = 1
-                            genLevel()
-                            return
+                if objects['ladders'].count(elem) > 1:
+                    self.genLevel()
+                    return
+                else:
+                    if (tabExists(objects['ladders'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or \
+                            (tabExists(objects['ladders'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0,
+                                                                                                False)) or \
+                            (tabExists(objects['ladders'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1,
+                                                                                                False)) or \
+                            (tabExists(objects['ladders'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1,
+                                                                                                 False)) or \
+                            (tabExists(objects['ladders'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1,
+                                                                                                 False)) or \
+                            (tabExists(objects['ladders'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1,
+                                                                                                 False)) or \
+                            (tabExists(objects['ladders'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0,
+                                                                                                 False)) or \
+                            (tabExists(objects['ladders'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1,
+                                                                                                  False)) or \
+                            (tabExists(objects['ladders'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
+                                                                                               True)) or \
+                            (tabExists(objects['ladders'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
+                                                                                               True)) or \
+                            (tabExists(objects['ladders'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
+                                                                                               True)) or \
+                            (tabExists(objects['ladders'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
+                                                                                                True)) or \
+                            (tabExists(objects['ladders'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
+                                                                                                True)) or \
+                            (tabExists(objects['ladders'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
+                                                                                                True)) or \
+                            (tabExists(objects['ladders'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
+                                                                                                True)) or \
+                            (tabExists(objects['ladders'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
+                                                                                                 True)):
+                        self.genLevel()
+                        return
 
+        for elems in objects['snakes']:
+            for elem in elems:
+                if objects['snakes'].count(elem) > 1:
+                    self.genLevel()
+                    return
+                else:
+                    if (tabExists(objects['snakes'], elem, 0, 1, False) and not tabExists(elems, elem, 0, 1, False)) or \
+                            (tabExists(objects['snakes'], elem, 1, 0, False) and not tabExists(elems, elem, 1, 0,
+                                                                                               False)) or \
+                            (tabExists(objects['snakes'], elem, 1, 1, False) and not tabExists(elems, elem, 1, 1,
+                                                                                               False)) or \
+                            (tabExists(objects['snakes'], elem, 0, -1, False) and not tabExists(elems, elem, 0, -1,
+                                                                                                False)) or \
+                            (tabExists(objects['snakes'], elem, -1, 1, False) and not tabExists(elems, elem, -1, 1,
+                                                                                                False)) or \
+                            (tabExists(objects['snakes'], elem, 1, -1, False) and not tabExists(elems, elem, 1, -1,
+                                                                                                False)) or \
+                            (tabExists(objects['snakes'], elem, -1, 0, False) and not tabExists(elems, elem, -1, 0,
+                                                                                                False)) or \
+                            (tabExists(objects['snakes'], elem, -1, -1, False) and not tabExists(elems, elem, -1, -1,
+                                                                                                 False)) or \
+                            (tabExists(objects['snakes'], elem, 0, 1, True) and not tabExists(elems, elem, 0, 1,
+                                                                                              True)) or \
+                            (tabExists(objects['snakes'], elem, 1, 0, True) and not tabExists(elems, elem, 1, 0,
+                                                                                              True)) or \
+                            (tabExists(objects['snakes'], elem, 1, 1, True) and not tabExists(elems, elem, 1, 1,
+                                                                                              True)) or \
+                            (tabExists(objects['snakes'], elem, 0, -1, True) and not tabExists(elems, elem, 0, -1,
+                                                                                               True)) or \
+                            (tabExists(objects['snakes'], elem, -1, 1, True) and not tabExists(elems, elem, -1, 1,
+                                                                                               True)) or \
+                            (tabExists(objects['snakes'], elem, 1, -1, True) and not tabExists(elems, elem, 1, -1,
+                                                                                               True)) or \
+                            (tabExists(objects['snakes'], elem, -1, 0, True) and not tabExists(elems, elem, -1, 0,
+                                                                                               True)) or \
+                            (tabExists(objects['snakes'], elem, -1, -1, True) and not tabExists(elems, elem, -1, -1,
+                                                                                                True)):
+                        self.genLevel()
+                        return
+            for elems in objects['ladders']:
+                for elem in elems:
+                    for elems2 in objects['snakes']:
+                        for elem2 in elems2:
+                            if isEquals(elem, elem2):
+                                objects['different'] = 1
+                                self.genLevel()
+                                return
 
-def placeObjects():
-    for i in range(len(objects['ladders'])):
-        if objects['ladders'][i][0][1] % 2 == 0:
-            objects['startLadders'].append([objects['simtab'][objects['ladders'][i][0][0]], objects['ladders'][i][0][1]])
-        else:
-            objects['startLadders'].append(objects['ladders'][i][0])
-        if objects['ladders'][i][len(objects['ladders'][i]) - 1][1] % 2 == 0:
-            objects['endLadders'].append([objects['simtab'][objects['ladders'][i][len(objects['ladders'][i]) - 1][0]],
-                                         objects['ladders'][i][len(objects['ladders'][i]) - 1][1]])
-        else:
-            objects['endLadders'].append(objects['ladders'][i][len(objects['ladders'][i]) - 1])
-        for j in range(len(objects['ladders'][i])):
-            print(objects['ladders'][i][j][0], objects['ladders'][i][j][1])
-            Terrain.itemconfigure(carreau[objects['ladders'][i][j][1]][objects['ladders'][i][j][0]], fill="green")
-    print(objects['startLadders'])
-    print(objects['endLadders'])
-
-    for i in range(len(objects['snakes'])):
-        if objects['snakes'][i][0][1] % 2 == 0:
-            objects['startSnakes'].append([objects['simtab'][objects['snakes'][i][0][0]], objects['snakes'][i][0][1]])
-        else:
-            objects['startSnakes'].append(objects['snakes'][i][0])
-        if objects['snakes'][i][len(objects['snakes'][i]) - 1][1] % 2 == 0:
-            objects['endSnakes'].append([objects['simtab'][objects['snakes'][i][len(objects['snakes'][i]) - 1][0]], objects['snakes'][i][len(objects['snakes'][i]) - 1][1]])
-        else:
-            objects['endSnakes'].append(objects['snakes'][i][len(objects['snakes'][i]) - 1])
-        for j in range(len(objects['snakes'][i])):
-            print(objects['snakes'][i][j][0], objects['snakes'][i][j][1])
-            Terrain.itemconfigure(carreau[objects['snakes'][i][j][1]][objects['snakes'][i][j][0]], fill="red")
-
-
-def onDiceClick(event):
-    rd_dice_face = random.randint(1, 1)
-    Terrain.itemconfigure(dice_face, text=rd_dice_face)
-    Terrain.tag_unbind("dice_face", '<Button-1>')
-    Terrain.tag_unbind("dice", "<Button-1>")
-    moveplayer(rd_dice_face)
-    time.sleep(0.100)
-    detectCollision()
-
-
-def moveplayer(rd):
-    cases = 0
-    unbind_final = 0
-    print(Terrain.coords(player[0]))
-    if objects['playerline'] % 2 == 0:
-        if Terrain.coords(player[0])[0] + rd * 60 <= 550 and Terrain.coords(player[0])[2] + rd * 60 <= 590:
-            Terrain.move(player[0], rd * 60, 0)
-        else:
-            while Terrain.coords(player[0])[0] < 550:
-                Terrain.move(player[0], 60, 0)
-                cases += 1
-            Terrain.move(player[0], -(abs(((rd - cases) - 1) * 60)), -60)
-            objects['playerline'] += 1
-    else:
-        if Terrain.coords(player[0])[1] == 10:
-            if Terrain.coords(player[0])[0] - rd * 60 < 10 and Terrain.coords(player[0])[2] - rd * 60 < 50:
-                while Terrain.coords(player[0])[0] > 10:
-                    Terrain.move(player[0], -60, 0)
-                    unbind_final = 1
-            elif Terrain.coords(player[0])[0] - rd * 60 == 10 and Terrain.coords(player[0])[2] - rd * 60 == 50:
-                Terrain.move(player[0], -(rd * 60), 0)
-                unbind_final = 1
+    def placeObjects(self):
+        for i in range(len(objects['ladders'])):
+            if objects['ladders'][i][0][1] % 2 == 0:
+                objects['startLadders'].append(
+                    [objects['simtab'][objects['ladders'][i][0][0]], objects['ladders'][i][0][1]])
             else:
-                Terrain.move(player[0], -(rd * 60), 0)
-        else:
-            if Terrain.coords(player[0])[0] - rd * 60 >= 10 and Terrain.coords(player[0])[2] - rd * 60 >= 50:
-                Terrain.move(player[0], -(rd * 60), 0)
+                objects['startLadders'].append(objects['ladders'][i][0])
+            if objects['ladders'][i][len(objects['ladders'][i]) - 1][1] % 2 == 0:
+                objects['endLadders'].append(
+                    [objects['simtab'][objects['ladders'][i][len(objects['ladders'][i]) - 1][0]],
+                     objects['ladders'][i][len(objects['ladders'][i]) - 1][1]])
             else:
-                while Terrain.coords(player[0])[0] > 10:
-                    Terrain.move(player[0], -60, 0)
-                    cases += 1
-                Terrain.move(player[0], abs(((rd - cases) - 1) * 60), -60)
-                objects['playerline'] += 1
-    if unbind_final == 0:
-        Terrain.tag_bind("dice_face", '<Button-1>', onDiceClick)
-        Terrain.tag_bind("dice", "<Button-1>", onDiceClick)
-
-
-def detectCollision():
-    for i in range(len(objects['endSnakes'])):
-        print(objects['endSnakes'])
-        print(objects['endSnakes'][i])
-        print(objects['startSnakes'])
-        print(objects['startSnakes'][i])
-        print(Terrain.coords(player[0]))
-        if int(Terrain.coords(player[0])[0]) == 600 - ((objects['endSnakes'][i][0] * 60)+50):
-                if int(Terrain.coords(player[0])[1]) == 600 - ((objects['endSnakes'][i][1] * 60)+50):
-                    Terrain.move(player[0], 0, (600 - ((objects['startSnakes'][i][1] * 60)+50)) - int(Terrain.coords(player[0])[1]))
-                    objects['playerline'] = (int(Terrain.coords(player[0])[1])+50)/60
-    for i in range(len(objects['startLadders'])):
-        print(objects['endLadders'])
-        print(objects['endLadders'][i])
+                objects['endLadders'].append(objects['ladders'][i][len(objects['ladders'][i]) - 1])
+            for j in range(len(objects['ladders'][i])):
+                print(objects['ladders'][i][j][0], objects['ladders'][i][j][1])
+                self.Terrain.itemconfigure(self.carreau[objects['ladders'][i][j][1]][objects['ladders'][i][j][0]], fill="green")
         print(objects['startLadders'])
-        print(objects['startLadders'][i])
-        print(Terrain.coords(player[0]))
-        if int(Terrain.coords(player[0])[0]) == 600 - ((objects['startLadders'][i][0] * 60)+50):
-                if int(Terrain.coords(player[0])[1]) == 600 - ((objects['startLadders'][i][1] * 60)+50):
-                    Terrain.move(player[0], 0, (600 - ((objects['endLadders'][i][1] * 60)+50)) - int(Terrain.coords(player[0])[1]))
-                    objects['playerline'] = (int(Terrain.coords(player[0])[1])+50)/60
+        print(objects['endLadders'])
+
+        for i in range(len(objects['snakes'])):
+            if objects['snakes'][i][0][1] % 2 == 0:
+                objects['startSnakes'].append(
+                    [objects['simtab'][objects['snakes'][i][0][0]], objects['snakes'][i][0][1]])
+            else:
+                objects['startSnakes'].append(objects['snakes'][i][0])
+            if objects['snakes'][i][len(objects['snakes'][i]) - 1][1] % 2 == 0:
+                objects['endSnakes'].append([objects['simtab'][objects['snakes'][i][len(objects['snakes'][i]) - 1][0]],
+                                             objects['snakes'][i][len(objects['snakes'][i]) - 1][1]])
+            else:
+                objects['endSnakes'].append(objects['snakes'][i][len(objects['snakes'][i]) - 1])
+            for j in range(len(objects['snakes'][i])):
+                print(objects['snakes'][i][j][0], objects['snakes'][i][j][1])
+                self.Terrain.itemconfigure(self.carreau[objects['snakes'][i][j][1]][objects['snakes'][i][j][0]], fill="red")
 
 
-fenetre = Tk()
-fenetre.title("Snakes & ladders")
-fenetre.geometry("800x600")
-Terrain = Canvas(fenetre, height=600, width=800)
-Terrain.pack(anchor='nw')
-carreau = [[Terrain.create_rectangle(i * 60, j * 60, (i + 1) * 60, (j + 1) * 60, fill="#FFFFFF")
-            for i in range(10)] for j in range(10)]
-labels = [[Terrain.create_text(i * 60 + 50, j * 60 + 10) for i in range(10)] for j in range(10)]
-labels.reverse()
-carreau.reverse()
-for i in range(1, 10, 2):
-    labels[i].reverse()
-    carreau[i].reverse()
-for i in range(10):
-    for j in range(10):
-        Terrain.itemconfigure(labels[i][j], text=(j + 1) + (i * 10))
-genLevel()
-placeObjects()
-player = [Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='')]
-dice = Terrain.create_rectangle(655, 25, 750, 120, fill="white", tags="dice")
-dice_face = Terrain.create_text(702.5, 72.5, fill="black", font=tkfont.Font(family='Helvetica', size=36, weight='bold'),
-                                tags="dice_face")
-Terrain.tag_bind("dice_face", '<Button-1>', onDiceClick)
-Terrain.tag_bind("dice", "<Button-1>", onDiceClick)
-fenetre.mainloop()
+    def onDiceClick(self, event):
+        rd_dice_face = random.randint(1, 1)
+        self.Terrain.itemconfigure(self.dice_face, text=rd_dice_face)
+        self.Terrain.tag_unbind("dice_face", '<Button-1>')
+        self.Terrain.tag_unbind("dice", "<Button-1>")
+        self.moveplayer(rd_dice_face)
+        time.sleep(0.100)
+        self.detectCollision()
+        if self.playerturn == (len(self.player) - 1):
+            self.playerturn = 0
+            self.Terrain.itemconfigure(self.playerturnlabel, text="Au tour du joueur 1")
+        else:
+            self.playerturn += 1
+            self.Terrain.itemconfigure(self.playerturnlabel, text=("Au tour du joueur " + str(self.playerturn + 1)))
+
+    def moveplayer(self, rd):
+            playerturn = self.playerturn
+            cases = 0
+            unbind_final = 0
+            print(self.Terrain.coords(self.player[playerturn]))
+            if objects['playerline'] % 2 == 0:
+                if self.Terrain.coords(self.player[playerturn])[0] + rd * 60 <= 550 and self.Terrain.coords(self.player[playerturn])[2] + rd * 60 <= 590:
+                    self.Terrain.move(self.player[playerturn], rd * 60, 0)
+                else:
+                    while self.Terrain.coords(self.player[playerturn])[0] < 550:
+                        self.Terrain.move(self.player[playerturn], 60, 0)
+                        cases += 1
+                    self.Terrain.move(self.player[playerturn], -(abs(((rd - cases) - 1) * 60)), -60)
+                    objects['playerline'] += 1
+            else:
+                if self.Terrain.coords(self.player[playerturn])[1] == 10:
+                    if self.Terrain.coords(self.player[playerturn])[0] - rd * 60 < 10 and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 < 50:
+                        while self.Terrain.coords(self.player[playerturn])[0] > 10:
+                            self.Terrain.move(self.player[playerturn], -60, 0)
+                            unbind_final = 1
+                    elif self.Terrain.coords(self.player[playerturn])[0] - rd * 60 == 10 and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 == 50:
+                        self.Terrain.move(self.player[playerturn], -(rd * 60), 0)
+                        unbind_final = 1
+                    else:
+                        self.Terrain.move(self.player[playerturn], -(rd * 60), 0)
+                else:
+                    if self.Terrain.coords(self.player[playerturn])[0] - rd * 60 >= 10 and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 >= 50:
+                        self.Terrain.move(self.player[playerturn], -(rd * 60), 0)
+                    else:
+                        while self.Terrain.coords(self.player[playerturn])[0] > 10:
+                            self.Terrain.move(self.player[playerturn], -60, 0)
+                            cases += 1
+                        self.Terrain.move(self.player[playerturn], abs(((rd - cases) - 1) * 60), -60)
+                        objects['playerline'] += 1
+            if unbind_final == 0:
+                self.Terrain.tag_bind("dice_face", '<Button-1>', self.onDiceClick)
+                self.Terrain.tag_bind("dice", "<Button-1>", self.onDiceClick)
+
+    def detectCollision(self):
+            playerturn = self.playerturn
+            for i in range(len(objects['endSnakes'])):
+                print(objects['endSnakes'])
+                print(objects['endSnakes'][i])
+                print(objects['startSnakes'])
+                print(objects['startSnakes'][i])
+                print(self.Terrain.coords(self.player[playerturn]))
+                if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['endSnakes'][i][0] * 60) + 50):
+                    if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['endSnakes'][i][1] * 60) + 50):
+                        self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['startSnakes'][i][1] * 60) + 50)) - int(
+                            self.Terrain.coords(self.player[playerturn])[1]))
+                        objects['playerline'] = (int(self.Terrain.coords(self.player[playerturn])[1]) + 50) / 60
+            for i in range(len(objects['startLadders'])):
+                print(objects['endLadders'])
+                print(objects['endLadders'][i])
+                print(objects['startLadders'])
+                print(objects['startLadders'][i])
+                print(self.Terrain.coords(self.player[playerturn]))
+                if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['startLadders'][i][0] * 60) + 50):
+                    if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['startLadders'][i][1] * 60) + 50):
+                        self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['endLadders'][i][1] * 60) + 50)) - int(
+                            self.Terrain.coords(self.player[playerturn])[1]))
+                        objects['playerline'] = (int(self.Terrain.coords(self.player[playerturn])[1]) + 50) / 60
+
+
+class MAINMENU():
+    def __init__(self):
+        self.menu = Tk()
+        self.menu.title("Snakes & Ladders")
+        self.menu.geometry("600x600")
+        gameTitle = Label(self.menu, text="Snakes & Ladders", font=tkfont.Font(family='Helvetica', size=36, weight='bold'))
+        gameTitle.pack(anchor='n')
+        onePlayer = Button(self.menu, text='1 Joueur', font=tkfont.Font(family='Helvetica', size=12, weight='normal'), width=35)
+        onePlayer.pack(anchor='n', pady=10)
+        twoPlayers = Button(self.menu, text='2 Joueurs', font=tkfont.Font(family='Helvetica', size=12, weight='normal'), width=35)
+        twoPlayers.pack(anchor='n', pady=10)
+        threePlayers = Button(self.menu, text='3 Joueurs', font=tkfont.Font(family='Helvetica', size=12, weight='normal'), width=35)
+        threePlayers.pack(anchor='n', pady=10)
+        fourPlayers = Button(self.menu, text='4 Joueurs', font=tkfont.Font(family='Helvetica', size=12, weight='normal'), width=35)
+        fourPlayers.pack(anchor='n', pady=10)
+        onePlayer.bind('<Button-1>', self.onBtClick)
+        twoPlayers.bind('<Button-1>', self.onBtClick)
+        threePlayers.bind('<Button-1>', self.onBtClick)
+        fourPlayers.bind('<Button-1>', self.onBtClick)
+        self.menu.mainloop()
+
+    def quit(self):
+        self.menu.destroy()
+
+    def onBtClick(self, event):
+        if str(event.widget) == '.!button':
+            self.quit()
+            print(1)
+            game = MAINGAME(1)
+        elif str(event.widget) == '.!button2':
+            self.quit()
+            print(2)
+            game = MAINGAME(2)
+        elif str(event.widget) == '.!button3':
+            self.quit()
+            print(3)
+            game = MAINGAME(3)
+        elif str(event.widget) == '.!button4':
+            self.quit()
+            print(4)
+            game = MAINGAME(4)
+
+menu = MAINMENU()
