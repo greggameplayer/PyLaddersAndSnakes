@@ -14,7 +14,7 @@ objects = {
     'endSnakes': [],
     'graphicalLadders': [],
     'simtab': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
-    'playerline': 0
+    'playerline': [0, 0, 0, 0]
 }
 
 
@@ -65,19 +65,29 @@ class MAINGAME():
         self.genLevel()
         self.placeObjects()
         if self.playerNumber == 1:
-            self.player = [self.Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='')]
+            self.player = [self.Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='grey')]
         elif self.playerNumber == 2:
-            self.player = [self.Terrain.create_oval(4, 560, 24, 580, fill="blue", outline=''),
-                    self.Terrain.create_oval(36, 560, 56, 580, fill="red", outline='')]
+            self.player = [self.Terrain.create_oval(4, 560, 24, 580, fill="blue", outline='grey'),
+                           self.Terrain.create_oval(36, 560, 56, 580, fill="red", outline='grey')]
         elif self.playerNumber == 3:
-            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline=''),
-                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline=''),
-                           self.Terrain.create_oval(24, 580, 34, 590, fill="green", outline='')]
+            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline='grey'),
+                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline='grey'),
+                           self.Terrain.create_oval(24, 580, 34, 590, fill="green", outline='grey')]
         else:
-            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline=''),
-                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline=''),
-                           self.Terrain.create_oval(14, 580, 24, 590, fill="green", outline=''),
-                           self.Terrain.create_oval(36, 580, 46, 590, fill="yellow", outline='')]
+            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline='grey'),
+                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline='grey'),
+                           self.Terrain.create_oval(14, 580, 24, 590, fill="green", outline='grey'),
+                           self.Terrain.create_oval(36, 580, 46, 590, fill="yellow", outline='grey')]
+        self.playerPositionGap = [[50], [56, 24], [46, 24, 36], [46, 24, 46, 24]]
+        self.playerPositionGapY = [[50], [40, 40], [40, 40, 20], [40, 40, 20, 20]]
+        self.playerPositionY = [[[550, 590]],
+                                [[544, 564],[576, 596]],
+                                [[554, 564],[576, 586], [564, 574]],
+                                [[554, 564], [576, 586], [554, 564], [576, 586]]]
+        self.playerPositionX = [[[10, 50]],
+                                [[4, 24], [36, 56]],
+                                [[14, 24], [36, 46], [24, 34]],
+                                [[14, 24], [36, 46], [14, 24], [36, 46]]]
         self.dice = self.Terrain.create_rectangle(655, 25, 750, 120, fill="white", tags="dice")
         self.dice_face = self.Terrain.create_text(702.5, 72.5, fill="black", font=tkfont.Font(family='Helvetica', size=36, weight='bold'),
                                         tags="dice_face")
@@ -231,13 +241,13 @@ class MAINGAME():
 
 
     def onDiceClick(self, event):
-        rd_dice_face = random.randint(1, 1)
+        rd_dice_face = random.randint(1, 6)
         self.Terrain.itemconfigure(self.dice_face, text=rd_dice_face)
         self.Terrain.tag_unbind("dice_face", '<Button-1>')
         self.Terrain.tag_unbind("dice", "<Button-1>")
-        self.moveplayer(rd_dice_face)
+        self.moveplayer(rd_dice_face, self.detectPlayerNumbersOnCase())
         time.sleep(0.100)
-        self.detectCollision()
+        self.detectCollision(self.detectPlayerNumbersOnCase())
         if self.playerturn == (len(self.player) - 1):
             self.playerturn = 0
             self.Terrain.itemconfigure(self.playerturnlabel, text="Au tour du joueur 1")
@@ -245,68 +255,67 @@ class MAINGAME():
             self.playerturn += 1
             self.Terrain.itemconfigure(self.playerturnlabel, text=("Au tour du joueur " + str(self.playerturn + 1)))
 
-    def moveplayer(self, rd):
+    def moveplayer(self, rd, playernumbers):
             playerturn = self.playerturn
             cases = 0
             unbind_final = 0
             print(self.Terrain.coords(self.player[playerturn]))
-            if objects['playerline'] % 2 == 0:
-                if self.Terrain.coords(self.player[playerturn])[0] + rd * 60 <= 550 and self.Terrain.coords(self.player[playerturn])[2] + rd * 60 <= 590:
+            if objects['playerline'][playerturn] % 2 == 0:
+                if self.Terrain.coords(self.player[playerturn])[0] + rd * 60 <= self.playerPositionY[self.playerNumber - 1][playerturn][0] and self.Terrain.coords(self.player[playerturn])[2] + rd * 60 <= self.playerPositionY[self.playerNumber - 1][playerturn][1]:
                     self.Terrain.move(self.player[playerturn], rd * 60, 0)
                 else:
-                    while self.Terrain.coords(self.player[playerturn])[0] < 550:
+                    while self.Terrain.coords(self.player[playerturn])[0] < self.playerPositionY[self.playerNumber - 1][playerturn][0]:
                         self.Terrain.move(self.player[playerturn], 60, 0)
                         cases += 1
                     self.Terrain.move(self.player[playerturn], -(abs(((rd - cases) - 1) * 60)), -60)
-                    objects['playerline'] += 1
+                    objects['playerline'][playerturn] += 1
             else:
-                if self.Terrain.coords(self.player[playerturn])[1] == 10:
-                    if self.Terrain.coords(self.player[playerturn])[0] - rd * 60 < 10 and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 < 50:
-                        while self.Terrain.coords(self.player[playerturn])[0] > 10:
+                if self.Terrain.coords(self.player[playerturn])[1] == self.playerPositionX[self.playerNumber - 1][playerturn][0]:
+                    if self.Terrain.coords(self.player[playerturn])[0] - rd * 60 < self.playerPositionX[self.playerNumber - 1][playerturn][0] and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 < self.playerPositionX[self.playerNumber - 1][playerturn][1]:
+                        while self.Terrain.coords(self.player[playerturn])[0] > self.playerPositionX[self.playerNumber - 1][playerturn][0]:
                             self.Terrain.move(self.player[playerturn], -60, 0)
                             unbind_final = 1
-                    elif self.Terrain.coords(self.player[playerturn])[0] - rd * 60 == 10 and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 == 50:
+                    elif self.Terrain.coords(self.player[playerturn])[0] - rd * 60 == self.playerPositionX[self.playerNumber - 1][playerturn][0] and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 == self.playerPositionX[self.playerNumber - 1][playerturn][1]:
                         self.Terrain.move(self.player[playerturn], -(rd * 60), 0)
                         unbind_final = 1
                     else:
                         self.Terrain.move(self.player[playerturn], -(rd * 60), 0)
                 else:
-                    if self.Terrain.coords(self.player[playerturn])[0] - rd * 60 >= 10 and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 >= 50:
+                    if self.Terrain.coords(self.player[playerturn])[0] - rd * 60 >= self.playerPositionX[self.playerNumber - 1][playerturn][0] and self.Terrain.coords(self.player[playerturn])[2] - rd * 60 >= self.playerPositionX[self.playerNumber - 1][playerturn][1]:
                         self.Terrain.move(self.player[playerturn], -(rd * 60), 0)
                     else:
-                        while self.Terrain.coords(self.player[playerturn])[0] > 10:
+                        while self.Terrain.coords(self.player[playerturn])[0] > self.playerPositionX[self.playerNumber - 1][playerturn][0]:
                             self.Terrain.move(self.player[playerturn], -60, 0)
                             cases += 1
                         self.Terrain.move(self.player[playerturn], abs(((rd - cases) - 1) * 60), -60)
-                        objects['playerline'] += 1
+                        objects['playerline'][playerturn] += 1
             if unbind_final == 0:
                 self.Terrain.tag_bind("dice_face", '<Button-1>', self.onDiceClick)
                 self.Terrain.tag_bind("dice", "<Button-1>", self.onDiceClick)
 
-    def detectCollision(self):
+    def detectCollision(self, playernumbers):
             playerturn = self.playerturn
             for i in range(len(objects['endSnakes'])):
-                print(objects['endSnakes'])
-                print(objects['endSnakes'][i])
-                print(objects['startSnakes'])
-                print(objects['startSnakes'][i])
-                print(self.Terrain.coords(self.player[playerturn]))
-                if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['endSnakes'][i][0] * 60) + 50):
-                    if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['endSnakes'][i][1] * 60) + 50):
-                        self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['startSnakes'][i][1] * 60) + 50)) - int(
+                print("----------")
+                print(self.Terrain.coords(self.player[playerturn])[0])
+                print(600 - ((objects['endSnakes'][i][0] * 60) + self.playerPositionGap[self.playerNumber - 1][playerturn]))
+                print("----------------------")
+                if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['endSnakes'][i][0] * 60) + self.playerPositionGap[self.playerNumber - 1][playerturn]):
+                    if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['endSnakes'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn]):
+                        self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['startSnakes'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn])) - int(
                             self.Terrain.coords(self.player[playerturn])[1]))
-                        objects['playerline'] = (int(self.Terrain.coords(self.player[playerturn])[1]) + 50) / 60
+                        objects['playerline'][playerturn] = (int(self.Terrain.coords(self.player[playerturn])[1]) + self.playerPositionGapY[self.playerNumber - 1][playerturn]) / 60
             for i in range(len(objects['startLadders'])):
-                print(objects['endLadders'])
-                print(objects['endLadders'][i])
-                print(objects['startLadders'])
                 print(objects['startLadders'][i])
                 print(self.Terrain.coords(self.player[playerturn]))
-                if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['startLadders'][i][0] * 60) + 50):
-                    if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['startLadders'][i][1] * 60) + 50):
-                        self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['endLadders'][i][1] * 60) + 50)) - int(
+                if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['startLadders'][i][0] * 60) + self.playerPositionGap[self.playerNumber - 1][playerturn]):
+                    if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['startLadders'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn]):
+                        self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['endLadders'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn])) - int(
                             self.Terrain.coords(self.player[playerturn])[1]))
-                        objects['playerline'] = (int(self.Terrain.coords(self.player[playerturn])[1]) + 50) / 60
+                        objects['playerline'][playerturn] = (int(self.Terrain.coords(self.player[playerturn])[1]) + self.playerPositionGapY[self.playerNumber - 1][playerturn]) / 60
+
+    def detectPlayerNumbersOnCase(self):
+        return "test"
 
 
 class MAINMENU():
