@@ -4,6 +4,15 @@ import random
 import math
 import numpy as np
 import time
+import os
+try:
+    import pypresence
+except ImportError:
+    os.system("pip3 install -r requirements.txt")
+client_id = "686550339578495046"
+RPC = pypresence.Presence(client_id)
+RPC.connect()
+
 
 objects = {
     'snakes': [],
@@ -337,6 +346,7 @@ class MAINMENU():
         twoPlayers.bind('<Button-1>', self.onBtClick)
         threePlayers.bind('<Button-1>', self.onBtClick)
         fourPlayers.bind('<Button-1>', self.onBtClick)
+        RPC.update(state="Dans les menus !", large_image="snakes-and-ladders", start=time.time())
         self.menu.mainloop()
 
     def quit(self):
