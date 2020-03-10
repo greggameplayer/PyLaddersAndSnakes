@@ -1,9 +1,8 @@
 from setuptools import setup, find_packages
 import sys
 import os
-from cx_Freeze import setup, Executable
-
 os.system("py -m pip install -r requirements.txt")
+from cx_Freeze import setup, Executable
 build_exe_options = {"includes": ["pypresence"]}
 
 base = None
