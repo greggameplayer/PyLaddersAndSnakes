@@ -7,6 +7,7 @@ import math
 import time
 import os
 import pypresence
+import threading
 client_id = "686550339578495046"
 pypresenceEnabled = True
 try:
@@ -54,13 +55,33 @@ def tabExists(elems, elem, x, y, reverse):
         return False
 
 
+class ANIM():
+    def __init__(self, canvas, dice_face, rd):
+        for i in range(random.randint(8, 15)):
+            canvas.Terrain.after(100, canvas.Terrain.itemconfigure(dice_face, text=random.randint(1, 6), fill="black"))
+        canvas.Terrain.itemconfigure(dice_face, text=rd, fill="red")
+        canvas.Terrain.tag_unbind("dice_face", '<Button-1>')
+        canvas.Terrain.tag_unbind("dice", "<Button-1>")
+        canvas.moveplayer(rd)
+        canvas.detectWin()
+        canvas.detectCollision()
+        if canvas.playerturn == (len(canvas.player) - 1) and not canvas.win:
+            canvas.playerturn = 0
+            canvas.Terrain.itemconfigure(canvas.playerturnlabel, text="Au tour de " + str(canvas.PlayerNames[0]))
+        elif not canvas.win:
+            canvas.playerturn += 1
+            canvas.Terrain.itemconfigure(canvas.playerturnlabel,
+                                       text=("Au tour de " + str(canvas.PlayerNames[canvas.playerturn])))
+        return
+
 class MAINGAME():
-    def __init__(self, PlayerNumber):
+    def __init__(self, PlayerNumber, PlayerNames, PlayerColors):
         self.playerNumber = PlayerNumber
         self.fenetre = Tk()
         self.fenetre.title("Snakes & Ladders")
         self.fenetre.geometry("800x600")
         self.fenetre.resizable(False, False)
+        self.PlayerNames = PlayerNames
         self.win = False
         self.Terrain = Canvas(self.fenetre, height=600, width=800)
         self.Terrain.pack(anchor='nw')
@@ -78,28 +99,28 @@ class MAINGAME():
         self.genLevel()
         self.placeObjects()
         if self.playerNumber == 1:
-            self.player = [self.Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='grey')]
+            self.player = [self.Terrain.create_oval(10, 550, 50, 590, fill=PlayerColors[0], outline='grey')]
             if pypresenceEnabled:
                 RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
                        large_text="PySnakes&Ladders", small_image="oneplayer", small_text="Mode 1 joueur !")
         elif self.playerNumber == 2:
-            self.player = [self.Terrain.create_oval(4, 560, 24, 580, fill="blue", outline='grey'),
-                           self.Terrain.create_oval(36, 560, 56, 580, fill="red", outline='grey')]
+            self.player = [self.Terrain.create_oval(4, 560, 24, 580, fill=PlayerColors[0], outline='grey'),
+                           self.Terrain.create_oval(36, 560, 56, 580, fill=PlayerColors[1], outline='grey')]
             if pypresenceEnabled:
                 RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
                        large_text="PySnakes&Ladders", small_image="twoplayers", small_text="Mode 2 joueurs !")
         elif self.playerNumber == 3:
-            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline='grey'),
-                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline='grey'),
-                           self.Terrain.create_oval(24, 580, 34, 590, fill="green", outline='grey')]
+            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill=PlayerColors[0], outline='grey'),
+                           self.Terrain.create_oval(36, 560, 46, 570, fill=PlayerColors[1], outline='grey'),
+                           self.Terrain.create_oval(24, 580, 34, 590, fill=PlayerColors[2], outline='grey')]
             if pypresenceEnabled:
                 RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
                        large_text="PySnakes&Ladders", small_image="threeplayers", small_text="Mode 3 joueurs !")
         else:
-            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline='grey'),
-                           self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline='grey'),
-                           self.Terrain.create_oval(14, 580, 24, 590, fill="green", outline='grey'),
-                           self.Terrain.create_oval(36, 580, 46, 590, fill="yellow", outline='grey')]
+            self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill=PlayerColors[0], outline='grey'),
+                           self.Terrain.create_oval(36, 560, 46, 570, fill=PlayerColors[1], outline='grey'),
+                           self.Terrain.create_oval(14, 580, 24, 590, fill=PlayerColors[2], outline='grey'),
+                           self.Terrain.create_oval(36, 580, 46, 590, fill=PlayerColors[3], outline='grey')]
             if pypresenceEnabled:
                 RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
                        large_text="PySnakes&Ladders", small_image="fourplayers", small_text="Mode 4 joueurs !")
@@ -120,7 +141,7 @@ class MAINGAME():
         self.dice = self.Terrain.create_rectangle(655, 25, 750, 120, fill="white", tags="dice")
         self.dice_face = self.Terrain.create_text(702.5, 72.5, fill="black", font=tkfont.Font(family='Helvetica', size=36, weight='bold'),
                                         tags="dice_face")
-        self.playerturnlabel = self.Terrain.create_text(702.5, 130, text="Au tour du joueur 1")
+        self.playerturnlabel = self.Terrain.create_text(702.5, 130, text="Au tour de " + str(self.PlayerNames[0]))
         self.playerturn = 0
         self.Terrain.tag_bind("dice_face", '<Button-1>', self.onDiceClick)
         self.Terrain.tag_bind("dice", "<Button-1>", self.onDiceClick)
@@ -145,7 +166,6 @@ class MAINGAME():
             for j in range(len(objects['ladders'][i])):
                 if j % 2 == 1 and j != 0:
                     objects['ladders'][i][j][0] = objects['simtab'][objects['ladders'][i][j][0]]
-        print(objects)
         for elems in objects['ladders']:
             for elem in elems:
                 if objects['ladders'].count(elem) > 1:
@@ -248,10 +268,7 @@ class MAINGAME():
             else:
                 objects['endLadders'].append(objects['ladders'][i][len(objects['ladders'][i]) - 1])
             for j in range(len(objects['ladders'][i])):
-                print(objects['ladders'][i][j][0], objects['ladders'][i][j][1])
                 self.Terrain.itemconfigure(self.carreau[objects['ladders'][i][j][1]][objects['ladders'][i][j][0]], fill="green")
-        print(objects['startLadders'])
-        print(objects['endLadders'])
 
         for i in range(len(objects['snakes'])):
             if objects['snakes'][i][0][1] % 2 == 0:
@@ -265,37 +282,32 @@ class MAINGAME():
             else:
                 objects['endSnakes'].append(objects['snakes'][i][len(objects['snakes'][i]) - 1])
             for j in range(len(objects['snakes'][i])):
-                print(objects['snakes'][i][j][0], objects['snakes'][i][j][1])
                 self.Terrain.itemconfigure(self.carreau[objects['snakes'][i][j][1]][objects['snakes'][i][j][0]], fill="red")
 
 
     def onDiceClick(self, event):
         rd_dice_face = random.randint(1, 6)
-        self.Terrain.itemconfigure(self.dice_face, text=rd_dice_face)
         self.Terrain.tag_unbind("dice_face", '<Button-1>')
         self.Terrain.tag_unbind("dice", "<Button-1>")
-        self.moveplayer(rd_dice_face, self.detectPlayerNumbersOnCase())
-        time.sleep(0.100)
+        diceAnim = threading.Thread(target=ANIM, args=(self, self.dice_face, rd_dice_face))
+        diceAnim.start()
+        '''self.Terrain.itemconfigure(self.dice_face, text=rd_dice_face)
+        self.Terrain.tag_unbind("dice_face", '<Button-1>')
+        self.Terrain.tag_unbind("dice", "<Button-1>")
+        self.moveplayer(rd_dice_face)
         self.detectWin()
-        self.detectCollision(self.detectPlayerNumbersOnCase())
+        self.detectCollision()
         if self.playerturn == (len(self.player) - 1) and not self.win:
             self.playerturn = 0
-            self.Terrain.itemconfigure(self.playerturnlabel, text="Au tour du joueur 1")
+            self.Terrain.itemconfigure(self.playerturnlabel, text="Au tour de " + str(self.PlayerNames[0]))
         elif not self.win:
             self.playerturn += 1
-            self.Terrain.itemconfigure(self.playerturnlabel, text=("Au tour du joueur " + str(self.playerturn + 1)))
+            self.Terrain.itemconfigure(self.playerturnlabel, text=("Au tour de " + str(self.PlayerNames[self.playerturn])))'''
 
-    def moveplayer(self, rd, playernumbers):
+    def moveplayer(self, rd):
             playerturn = self.playerturn
             cases = 0
             unbind_final = 0
-            print("//")
-            print(self.Terrain.coords(self.player[playerturn])[1])
-            print(self.Terrain.coords(self.player[playerturn])[0] - rd * 60)
-            print(self.playerPositionX[self.playerNumber - 1][playerturn][0])
-            print(self.Terrain.coords(self.player[playerturn])[0])
-            print(self.playerPositionX[self.playerNumber - 1][playerturn][0] - rd * 60)
-            print("//")
             if objects['playerline'][playerturn] % 2 == 0:
                 if self.Terrain.coords(self.player[playerturn])[0] + rd * 60 <= self.playerPositionY[self.playerNumber - 1][playerturn][0] and self.Terrain.coords(self.player[playerturn])[2] + rd * 60 <= self.playerPositionY[self.playerNumber - 1][playerturn][1]:
                     self.Terrain.move(self.player[playerturn], rd * 60, 0)
@@ -327,36 +339,27 @@ class MAINGAME():
                 self.Terrain.tag_bind("dice_face", '<Button-1>', self.onDiceClick)
                 self.Terrain.tag_bind("dice", "<Button-1>", self.onDiceClick)
 
-    def detectCollision(self, playernumbers):
+    def detectCollision(self):
             playerturn = self.playerturn
             for i in range(len(objects['endSnakes'])):
-                print("----------")
-                print(self.Terrain.coords(self.player[playerturn])[0])
-                print(600 - ((objects['endSnakes'][i][0] * 60) + self.playerPositionGap[self.playerNumber - 1][playerturn]))
-                print("----------------------")
                 if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['endSnakes'][i][0] * 60) + self.playerPositionGap[self.playerNumber - 1][playerturn]):
                     if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['endSnakes'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn]):
                         self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['startSnakes'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn])) - int(
                             self.Terrain.coords(self.player[playerturn])[1]))
                         objects['playerline'][playerturn] = (int(self.Terrain.coords(self.player[playerturn])[1]) + self.playerPositionGapY[self.playerNumber - 1][playerturn]) / 60
             for i in range(len(objects['startLadders'])):
-                print(objects['startLadders'][i])
-                print(self.Terrain.coords(self.player[playerturn]))
                 if int(self.Terrain.coords(self.player[playerturn])[0]) == 600 - ((objects['startLadders'][i][0] * 60) + self.playerPositionGap[self.playerNumber - 1][playerturn]):
                     if int(self.Terrain.coords(self.player[playerturn])[1]) == 600 - ((objects['startLadders'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn]):
                         self.Terrain.move(self.player[playerturn], 0, (600 - ((objects['endLadders'][i][1] * 60) + self.playerPositionGapY[self.playerNumber - 1][playerturn])) - int(
                             self.Terrain.coords(self.player[playerturn])[1]))
                         objects['playerline'][playerturn] = (int(self.Terrain.coords(self.player[playerturn])[1]) + self.playerPositionGapY[self.playerNumber - 1][playerturn]) / 60
 
-    def detectPlayerNumbersOnCase(self):
-        return "test"
-
     def detectWin(self):
         if int(self.Terrain.coords(self.player[self.playerturn])[0]) == self.playerPositionX[self.playerNumber - 1][self.playerturn][0]:
             if self.Terrain.coords(self.player[self.playerturn])[1] == self.playerPositionYMax[self.playerNumber - 1][self.playerturn][0]:
                 self.Terrain.tag_unbind("dice_face", '<Button-1>')
                 self.Terrain.tag_unbind("dice", "<Button-1>")
-                self.Terrain.itemconfigure(self.playerturnlabel, fill="green", text="Le joueur " + str(self.playerturn + 1) + " a gagné !")
+                self.Terrain.itemconfigure(self.playerturnlabel, fill="green", text=str(self.PlayerNames[self.playerturn]) + " a gagné !")
                 self.win = True
 
 
@@ -414,19 +417,24 @@ class PLAYERMENU():
         self.menu.configure(background="lightblue")
         self.menu.resizable(False, False)
         self.playerNumber = playerNumber
+        self.varColor1 = "blue"
+        self.varColor2 = "red"
+        self.varColor3 = "green"
+        self.varColor4 = "yellow"
+        self.varInput = StringVar()
+        self.varInput2 = StringVar()
+        self.varInput3 = StringVar()
+        self.varInput4 = StringVar()
 
         if self.playerNumber == 1:
             self.label1 = Label(self.menu, text="Joueur 1 : ", background="lightblue")
             self.label1.grid(row=0, column=3, pady=20)
-            self.varInput = StringVar()
             self.entree1 = Entry(self.menu, textvariable=self.varInput, width=30)
             self.entree1.grid(row=0, column=4)
             self.color1 = Button(self.menu, background="blue", width=5, activebackground="blue")
             self.color1.grid(row=0, column=5)
             self.color1.bind('<Button-1>', self.onClickColor)
         elif self.playerNumber == 2:
-            self.varInput = StringVar()
-            self.varInput2 = StringVar()
             self.label1 = Label(self.menu, text="Joueur 1 : ", background="lightblue")
             self.label1.grid(row=0, column=3, pady=20)
             self.entree1 = Entry(self.menu, textvariable=self.varInput, width=30)
@@ -442,9 +450,6 @@ class PLAYERMENU():
             self.color1.bind('<Button-1>', self.onClickColor)
             self.color2.bind('<Button-1>', self.onClickColor)
         elif self.playerNumber == 3:
-            self.varInput = StringVar()
-            self.varInput2 = StringVar()
-            self.varInput3 = StringVar()
             self.label1 = Label(self.menu, text="Joueur 1 : ", background="lightblue")
             self.label1.grid(row=0, column=3, pady=20)
             self.entree1 = Entry(self.menu, textvariable=self.varInput, width=30)
@@ -467,10 +472,6 @@ class PLAYERMENU():
             self.color2.bind('<Button-1>', self.onClickColor)
             self.color3.bind('<Button-1>', self.onClickColor)
         else:
-            self.varInput = StringVar()
-            self.varInput2 = StringVar()
-            self.varInput3 = StringVar()
-            self.varInput4 = StringVar()
             self.label1 = Label(self.menu, text="Joueur 1 : ", background="lightblue")
             self.label1.grid(row=0, column=3, pady=20)
             self.entree1 = Entry(self.menu, textvariable=self.varInput, width=30)
@@ -522,8 +523,19 @@ class PLAYERMENU():
                     self.playerNumber == 3 and "".join(self.varInput.get().split(" ")) != "" and "".join(self.varInput2.get().split(" ")) != "" and "".join(self.varInput3.get().split(" ")) != "" or\
                     self.playerNumber == 4 and "".join(self.varInput.get().split(" ")) != "" and "".join(self.varInput2.get().split(" ")) != "" and "".join(self.varInput3.get().split(" ")) != "" and "".join(self.varInput4.get().split(" ")) != "":
 
-                self.quit()
-                game = MAINGAME(self.playerNumber)
+                if self.playerNumber == 1 or\
+                        self.playerNumber == 2 and self.color1['background'] != self.color2['background'] or\
+                        self.playerNumber == 3 and self.color1['background'] != self.color2['background'] and self.color3['background'] != self.color2['background'] and self.color1['background'] != self.color3['background'] or\
+                        self.playerNumber == 4 and self.color1['background'] != self.color2['background'] and self.color3['background'] != self.color2['background'] and self.color1['background'] != self.color3['background'] and\
+                        self.color1['background'] != self.color4['background'] and self.color2['background'] != self.color4['background'] and self.color3['background'] != self.color4['background']:
+
+                    self.quit()
+                    PlayerNames = [self.varInput.get(), self.varInput2.get(), self.varInput3.get(), self.varInput4.get()]
+                    PlayerColors = [self.varColor1, self.varColor2, self.varColor3, self.varColor4]
+                    game = MAINGAME(self.playerNumber, PlayerNames, PlayerColors)
+                else:
+                    tkmessage.showerror("Erreur de couleur de joueur",
+                                        "Veuillez choisir des couleurs de joueurs différentes !")
             else:
                 tkmessage.showerror("Erreur de nom de joueur", "Veuillez choisir des noms de joueurs !")
         else:
@@ -540,15 +552,19 @@ class PLAYERMENU():
     def onClickColor(self, event):
         if str(event.widget) == '.!button':
             colorchoosen = tkcolor.askcolor()[1]
+            self.varColor1 = colorchoosen
             self.color1.configure(background=colorchoosen, activebackground=colorchoosen)
         elif str(event.widget) == '.!button2':
             colorchoosen = tkcolor.askcolor()[1]
+            self.varColor2 = colorchoosen
             self.color2.configure(background=colorchoosen, activebackground=colorchoosen)
         elif str(event.widget) == '.!button3':
             colorchoosen = tkcolor.askcolor()[1]
+            self.varColor3 = colorchoosen
             self.color3.configure(background=colorchoosen, activebackground=colorchoosen)
         elif str(event.widget) == '.!button4':
             colorchoosen = tkcolor.askcolor()[1]
+            self.varColor4 = colorchoosen
             self.color4.configure(background=colorchoosen, activebackground=colorchoosen)
 
 menu = MAINMENU()
