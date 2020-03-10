@@ -1,1 +1,2 @@
 pypresence
+cx_Freeze

@@ -2,13 +2,9 @@ from tkinter import *
 import tkinter.font as tkfont
 import random
 import math
-import numpy as np
 import time
 import os
-try:
-    import pypresence
-except ImportError:
-    os.system("pip3 install -r requirements.txt")
+import pypresence
 client_id = "686550339578495046"
 RPC = pypresence.Presence(client_id)
 RPC.connect()
@@ -75,18 +71,26 @@ class MAINGAME():
         self.placeObjects()
         if self.playerNumber == 1:
             self.player = [self.Terrain.create_oval(10, 550, 50, 590, fill="blue", outline='grey')]
+            RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
+                       large_text="PySnakes&Ladders", small_image="oneplayer", small_text="Mode 1 joueur !")
         elif self.playerNumber == 2:
             self.player = [self.Terrain.create_oval(4, 560, 24, 580, fill="blue", outline='grey'),
                            self.Terrain.create_oval(36, 560, 56, 580, fill="red", outline='grey')]
+            RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
+                       large_text="PySnakes&Ladders", small_image="twoplayers", small_text="Mode 2 joueurs !")
         elif self.playerNumber == 3:
             self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline='grey'),
                            self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline='grey'),
                            self.Terrain.create_oval(24, 580, 34, 590, fill="green", outline='grey')]
+            RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
+                       large_text="PySnakes&Ladders", small_image="threeplayers", small_text="Mode 3 joueurs !")
         else:
             self.player = [self.Terrain.create_oval(14, 560, 24, 570, fill="blue", outline='grey'),
                            self.Terrain.create_oval(36, 560, 46, 570, fill="red", outline='grey'),
                            self.Terrain.create_oval(14, 580, 24, 590, fill="green", outline='grey'),
                            self.Terrain.create_oval(36, 580, 46, 590, fill="yellow", outline='grey')]
+            RPC.update(state="En jeu !", large_image="snakes-and-ladders", start=time.time(),
+                       large_text="PySnakes&Ladders", small_image="fourplayers", small_text="Mode 4 joueurs !")
         self.playerPositionGap = [[50], [56, 24], [46, 24, 36], [46, 24, 46, 24]]
         self.playerPositionGapY = [[50], [40, 40], [40, 40, 20], [40, 40, 20, 20]]
         self.playerPositionY = [[[550, 590]],
@@ -346,7 +350,7 @@ class MAINMENU():
         twoPlayers.bind('<Button-1>', self.onBtClick)
         threePlayers.bind('<Button-1>', self.onBtClick)
         fourPlayers.bind('<Button-1>', self.onBtClick)
-        RPC.update(state="Dans les menus !", large_image="snakes-and-ladders", start=time.time())
+        RPC.update(state="Dans les menus !", large_image="snakes-and-ladders", start=time.time(), large_text="PySnakes&Ladders")
         self.menu.mainloop()
 
     def quit(self):
