@@ -2,6 +2,7 @@ import simpleaudio as sa
 import random
 from PyLaddersAndSnakes.functions import *
 
+
 class ANIM():
     def __init__(self, canvas, dice_face, rd):
         wave_obj = sa.WaveObject.from_wave_file(find_data_file("sounds/dice.wav"))
@@ -13,13 +14,13 @@ class ANIM():
         canvas.Terrain.tag_unbind("dice", "<Button-1>")
         play_obj_dice.wait_done()
         canvas.moveplayer(rd)
-        canvas.detectWin()
         canvas.detectCollision()
+        canvas.detectWin()
         if canvas.playerturn == (len(canvas.player) - 1) and not canvas.win:
             canvas.playerturn = 0
             canvas.Terrain.itemconfigure(canvas.playerturnlabel, text="Au tour de " + str(canvas.PlayerNames[0]))
         elif not canvas.win:
             canvas.playerturn += 1
             canvas.Terrain.itemconfigure(canvas.playerturnlabel,
-                                       text=("Au tour de " + str(canvas.PlayerNames[canvas.playerturn])))
+                                         text=("Au tour de " + str(canvas.PlayerNames[canvas.playerturn])))
         return
