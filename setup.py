@@ -4,7 +4,7 @@ import sys
 from cx_Freeze import Executable
 from cx_Freeze import setup
 
-os.system("py -m pip install --upgrade pip setuptools")
+os.system("py -m pip install --upgrade pip")
 os.system("py -m pip install -r requirements.txt")
 build_exe_options = {
     "includes": ["pypresence", "simpleaudio"],
