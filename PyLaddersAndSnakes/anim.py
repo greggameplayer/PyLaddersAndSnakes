@@ -36,4 +36,3 @@ class ANIM:
                 text=("Au tour de " +
                       str(canvas.PlayerNames[canvas.playerturn])),
             )
-        return

@@ -187,7 +187,7 @@ class PLAYERMENU:
     def quit(self):
         self.menu.destroy()
 
-    def onBtClick(self, event):
+    def onBtClick(self, _event):
         if (self.playerNumber == 1 or self.playerNumber == 2
                 and self.varInput.get() != self.varInput2.get()
                 or self.playerNumber == 3
@@ -247,8 +247,8 @@ class PLAYERMENU:
                         self.varColor3,
                         self.varColor4,
                     ]
-                    game = MAINGAME(self.playerNumber, PlayerNames,
-                                    PlayerColors, self.pypresenceRPC)
+                    MAINGAME(self.playerNumber, PlayerNames,
+                             PlayerColors, self.pypresenceRPC)
                 else:
                     tkmessage.showerror(
                         "Erreur de couleur de joueur",
@@ -263,11 +263,11 @@ class PLAYERMENU:
                 "Veuillez choisir des noms de joueurs différents !",
             )
 
-    def onEnter(self, event):
+    def onEnter(self, _event):
         self.submit["background"] = "cyan"
         self.submit["activebackground"] = "cyan"
 
-    def onLeave(self, event):
+    def onLeave(self, _event):
         self.submit["background"] = "lightblue"
         self.submit["activebackground"] = "lightblue"
 

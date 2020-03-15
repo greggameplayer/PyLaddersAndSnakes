@@ -9,6 +9,7 @@ pypresenceEnabled = True
 
 
 def find_data_file(filename):
+    """utilisé pour trouver le chemin du dossier resources"""
     if getattr(sys, "frozen", False):
         # The application is frozen
         datadir = os.path.dirname(sys.executable)
@@ -21,6 +22,7 @@ def find_data_file(filename):
 
 
 def isEquals(elem1, elem2):
+    """utilisé pour tester si un élément de tableau et égal à un autre élément de tableau"""
     if elem1[0] == elem2[0] and elem1[1] == elem2[1]:
         return True
     else:
@@ -28,6 +30,9 @@ def isEquals(elem1, elem2):
 
 
 def tabExists(elems, elem, x, y, reverse):
+    """utilisé pour tester si un élément avec plus ou moins en hauteur et/ou en largeur
+       dans un tableau inversé ou non existe
+    """
     if reverse:
         tabtemp = [objects["simtab"][elem[0]] + x, elem[1] + y]
     else:
@@ -46,6 +51,7 @@ def tabExists(elems, elem, x, y, reverse):
 
 
 def CreatePyPresenceConnection():
+    """utilisé pour créer une connection à discord rich presence si votre application discord est lancé"""
     client_id = "686550339578495046"
     try:
         RPC = pypresence.Presence(client_id)

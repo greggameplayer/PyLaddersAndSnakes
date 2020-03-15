@@ -198,7 +198,7 @@ class MAINGAME:
     def genLevel(self):
         objects["snakes"] = []
         objects["ladders"] = []
-        for i in range(random.randint(3, 6)):
+        for i in range(random.randint(3, 5)):
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
@@ -211,7 +211,7 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["snakes"][i][j][0] = objects["simtab"][
                         objects["snakes"][i][j][0]]
-        for i in range(random.randint(3, 6)):
+        for i in range(random.randint(3, 5)):
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
@@ -248,8 +248,6 @@ class MAINGAME:
                          and not tabExists(elems, elem, -1, -1, False))
                             or (tabExists(objects["ladders"], elem, 0, 1, True)
                                 and not tabExists(elems, elem, 0, 1, True))
-                            or (tabExists(objects["ladders"], elem, 1, 0, True)
-                                and not tabExists(elems, elem, 1, 0, True))
                             or (tabExists(objects["ladders"], elem, 1, 1, True)
                                 and not tabExists(elems, elem, 1, 1, True)) or
                         (tabExists(objects["ladders"], elem, 0, -1, True)
@@ -258,8 +256,6 @@ class MAINGAME:
                          and not tabExists(elems, elem, -1, 1, True)) or
                         (tabExists(objects["ladders"], elem, 1, -1, True)
                          and not tabExists(elems, elem, 1, -1, True)) or
-                        (tabExists(objects["ladders"], elem, -1, 0, True)
-                         and not tabExists(elems, elem, -1, 0, True)) or
                         (tabExists(objects["ladders"], elem, -1, -1, True)
                          and not tabExists(elems, elem, -1, -1, True))):
                         self.genLevel()
@@ -289,8 +285,6 @@ class MAINGAME:
                          and not tabExists(elems, elem, -1, -1, False))
                             or (tabExists(objects["snakes"], elem, 0, 1, True)
                                 and not tabExists(elems, elem, 0, 1, True))
-                            or (tabExists(objects["snakes"], elem, 1, 0, True)
-                                and not tabExists(elems, elem, 1, 0, True))
                             or (tabExists(objects["snakes"], elem, 1, 1, True)
                                 and not tabExists(elems, elem, 1, 1, True))
                             or (tabExists(objects["snakes"], elem, 0, -1, True)
@@ -299,10 +293,8 @@ class MAINGAME:
                                 and not tabExists(elems, elem, -1, 1, True))
                             or (tabExists(objects["snakes"], elem, 1, -1, True)
                                 and not tabExists(elems, elem, 1, -1, True))
-                            or (tabExists(objects["snakes"], elem, -1, 0, True)
-                                and not tabExists(elems, elem, -1, 0, True)) or
-                        (tabExists(objects["snakes"], elem, -1, -1, True)
-                         and not tabExists(elems, elem, -1, -1, True))):
+                            or (tabExists(objects["snakes"], elem, -1, -1, True)
+                                and not tabExists(elems, elem, -1, -1, True))):
                         self.genLevel()
                         return
             for elems in objects["ladders"]:
@@ -364,7 +356,7 @@ class MAINGAME:
                     fill="red",
                 )
 
-    def onDiceClick(self, event):
+    def onDiceClick(self, _event):
         rd_dice_face = random.randint(1, 6)
         self.Terrain.tag_unbind("dice_face", "<Button-1>")
         self.Terrain.tag_unbind("dice", "<Button-1>")

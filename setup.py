@@ -11,7 +11,7 @@ if sys.platform == 'win32':
     base = 'Win32GUI'
 
 executables = [
-    Executable('PyLaddersAndSnakes/__init__.py', base=base, icon="resources/images/snakes-and-ladders.ico",
+    Executable('__main__.py', base=base, icon="resources/images/snakes-and-ladders.ico",
                targetName="PyLaddersAndSnakes")
 ]
 

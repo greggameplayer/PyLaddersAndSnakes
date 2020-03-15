@@ -67,17 +67,13 @@ class MAINMENU:
     def onBtClick(self, event):
         if str(event.widget) == ".!button":
             self.quit()
-            playerscreen = PLAYERMENU(1, self.pypresenceRPC)
+            PLAYERMENU(1, self.pypresenceRPC)
         elif str(event.widget) == ".!button2":
             self.quit()
-            playerscreen = PLAYERMENU(2, self.pypresenceRPC)
+            PLAYERMENU(2, self.pypresenceRPC)
         elif str(event.widget) == ".!button3":
             self.quit()
-            playerscreen = PLAYERMENU(3, self.pypresenceRPC)
+            PLAYERMENU(3, self.pypresenceRPC)
         elif str(event.widget) == ".!button4":
             self.quit()
-            playerscreen = PLAYERMENU(4, self.pypresenceRPC)
-
-
-pypresence = CreatePyPresenceConnection()
-MAINMENU(pypresence)
+            PLAYERMENU(4, self.pypresenceRPC)
