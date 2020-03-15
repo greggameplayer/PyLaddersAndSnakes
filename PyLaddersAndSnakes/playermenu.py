@@ -1,5 +1,6 @@
-from PyLaddersAndSnakes.maingame import *
 import tkinter.colorchooser as tkcolor
+
+from PyLaddersAndSnakes.maingame import *
 
 
 class PLAYERMENU:

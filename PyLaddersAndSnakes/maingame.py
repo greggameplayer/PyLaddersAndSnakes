@@ -1,9 +1,10 @@
-from PyLaddersAndSnakes.anim import *
-from tkinter import *
-import tkinter.messagebox as tkmessage
-import tkinter.font as tkfont
 import threading
 import time
+import tkinter.font as tkfont
+import tkinter.messagebox as tkmessage
+from tkinter import *
+
+from PyLaddersAndSnakes.anim import *
 
 
 class MAINGAME:

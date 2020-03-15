@@ -1,5 +1,7 @@
-import simpleaudio as sa
 import random
+
+import simpleaudio as sa
+
 from PyLaddersAndSnakes.functions import *
 
 

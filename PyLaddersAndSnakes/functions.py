@@ -1,6 +1,8 @@
-import sys
 import os
+import sys
+
 import pypresence
+
 from PyLaddersAndSnakes.objects import *
 
 pypresenceEnabled = True
