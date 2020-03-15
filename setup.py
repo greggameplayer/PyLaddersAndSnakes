@@ -1,7 +1,10 @@
-from cx_Freeze import setup, Executable
-from setuptools import setup, find_packages
-import sys
 import os
+import sys
+
+from cx_Freeze import Executable
+from cx_Freeze import setup
+from setuptools import find_packages
+from setuptools import setup
 
 os.system("py -m pip install --upgrade pip setuptools")
 os.system("py -m pip install -r requirements.txt")
