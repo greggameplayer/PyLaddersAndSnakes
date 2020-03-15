@@ -20,12 +20,17 @@ class ANIM:
             find_data_file("sounds/dice.wav"))
         play_obj_dice = wave_obj.play()
         for i in range(random.randint(8, 15)):
+            randomint = random.randint(1, 6)
+            while randomint == objects["animResult"]:
+                randomint = random.randint(1, 6)
+            objects["animResult"] = randomint
             canvas.Terrain.after(
                 100,
                 canvas.Terrain.itemconfigure(dice_face,
                                              text=random.randint(1, 6),
                                              fill="black"),
             )
+        objects["animResult"] = 1
         canvas.Terrain.itemconfigure(dice_face, text=rd, fill="red")
         canvas.Terrain.tag_unbind("dice_face", "<Button-1>")
         canvas.Terrain.tag_unbind("dice", "<Button-1>")

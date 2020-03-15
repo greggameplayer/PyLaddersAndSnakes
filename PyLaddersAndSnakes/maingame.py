@@ -534,3 +534,7 @@ class MAINGAME:
                     text=str(self.PlayerNames[self.playerturn]) + " a gagné !",
                 )
                 self.win = True
+                wave_obj_win = sa.WaveObject.from_wave_file(
+                    find_data_file("sounds/win.wav"))
+                play_obj_win = wave_obj_win.play()
+                play_obj_win.wait_done()
