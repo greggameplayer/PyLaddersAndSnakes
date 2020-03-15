@@ -1,13 +1,15 @@
-import sys
 import os
+import sys
+
 import pypresence
+
 from PyLaddersAndSnakes.objects import *
 
 pypresenceEnabled = True
 
 
 def find_data_file(filename):
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, "frozen", False):
         # The application is frozen
         datadir = os.path.dirname(sys.executable)
         return os.path.join(datadir, "resources/" + filename)
@@ -27,10 +29,10 @@ def isEquals(elem1, elem2):
 
 def tabExists(elems, elem, x, y, reverse):
     if reverse:
-        tabtemp = [objects['simtab'][elem[0]] + x, elem[1] + y]
+        tabtemp = [objects["simtab"][elem[0]] + x, elem[1] + y]
     else:
         tabtemp = [elem[0] + x, elem[1] + y]
-    if elems == objects['ladders'] or elems == objects['snakes']:
+    if elems == objects["ladders"] or elems == objects["snakes"]:
         for elen in elems:
             for el in elen:
                 if el[0] == tabtemp[0] and el[1] == tabtemp[1]:
