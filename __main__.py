@@ -1,4 +1,4 @@
-from PyLaddersAndSnakes.mainmenu import *
+from PyLaddersAndSnakes.mainmenu import MAINMENU, CreatePyPresenceConnection
 
 pypresence = CreatePyPresenceConnection()
 MAINMENU(pypresence)
