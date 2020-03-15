@@ -7,6 +7,15 @@ from PyLaddersAndSnakes.functions import *
 
 class ANIM:
     def __init__(self, canvas, dice_face, rd):
+        """
+        fonction permettant d'initialiser un objet de classe ANIM représentant
+        l'animation du dés et permet aussi d'effectuer toutes les fonctions
+        pour bouger le joueur, détecter les obstacles et la victoire après
+        celle-ci
+        :param canvas:
+        :param dice_face:
+        :param rd:
+        """
         wave_obj = sa.WaveObject.from_wave_file(
             find_data_file("sounds/dice.wav"))
         play_obj_dice = wave_obj.play()

@@ -9,6 +9,14 @@ from PyLaddersAndSnakes.anim import *
 
 class MAINGAME:
     def __init__(self, PlayerNumber, PlayerNames, PlayerColors, pypresence):
+        """
+        fonction permettant d'initialiser un objet de la classe MAINGAME représentant
+        le jeu principal
+        :param PlayerNumber:
+        :param PlayerNames:
+        :param PlayerColors:
+        :param pypresence:
+        """
         self.pypresenceRPC = pypresence
         self.playerNumber = PlayerNumber
         self.fenetre = Tk()
@@ -196,6 +204,11 @@ class MAINGAME:
         self.fenetre.mainloop()
 
     def genLevel(self):
+        """
+        fonction permettant de générer le niveau, tous les obstacles dessus
+        (échelles et serpents) et de les stocker dans des tableaux
+        :return:
+        """
         objects["snakes"] = []
         objects["ladders"] = []
         for i in range(random.randint(2, 3)):
@@ -307,6 +320,11 @@ class MAINGAME:
                                 return
 
     def placeObjects(self):
+        """
+        fonction permettant de placer graphiquement les échelles et les serpents
+        contenu dans les tableaux placés dans le dictionnaire objects
+        :return:
+        """
         for i in range(len(objects["ladders"])):
             if objects["ladders"][i][0][1] % 2 == 0:
                 objects["startLadders"].append([
@@ -357,6 +375,13 @@ class MAINGAME:
                 )
 
     def onDiceClick(self, _event):
+        """
+        fonction executé lors de l'appuie sur le dés permettant de le faire tourner
+        et donc de générer un nombre aléatoire et de lancer son animation via la
+        création d'un objet de la classe ANIM dans un nouveau Thread
+        :param _event:
+        :return:
+        """
         rd_dice_face = random.randint(1, 6)
         self.Terrain.tag_unbind("dice_face", "<Button-1>")
         self.Terrain.tag_unbind("dice", "<Button-1>")
@@ -365,6 +390,12 @@ class MAINGAME:
         diceAnim.start()
 
     def moveplayer(self, rd):
+        """
+        fonction executé à la suite de l'animation du dés permettant
+        de faire avancer le joueur sur la case en fonction du nombre désigné par le dés
+        :param rd:
+        :return:
+        """
         playerturn = self.playerturn
         cases = 0
         if objects["playerline"][playerturn] % 2 == 0:
@@ -420,6 +451,12 @@ class MAINGAME:
             self.Terrain.tag_bind("dice", "<Button-1>", self.onDiceClick)
 
     def detectCollision(self):
+        """
+        fonction executé à la suite de moveplayer(self, rd) permettant de bouger
+        le joueur sur la case de destination du serpent ou de l'échelle si il
+        est positionné sur le début de ceux-ci
+        :return:
+        """
         self.Terrain.tag_unbind("dice_face", "<Button-1>")
         self.Terrain.tag_unbind("dice", "<Button-1>")
         playerturn = self.playerturn
@@ -477,6 +514,12 @@ class MAINGAME:
         self.Terrain.tag_bind("dice", "<Button-1>", self.onDiceClick)
 
     def detectWin(self):
+        """
+        fonction executé à la suite de detectCollision(self) permettant de détecter
+        si le joueur se trouve sur la dernière case et de lui retourner un message
+        de victoire si c'est le cas
+        :return:
+        """
         if (int(self.Terrain.coords(self.player[self.playerturn])[0]) ==
                 self.playerPositionX[self.playerNumber -
                                      1][self.playerturn][0]):
