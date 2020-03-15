@@ -1,5 +1,15 @@
-from PyLaddersAndSnakes.playermenu import PLAYERMENU, find_data_file, tkfont, tkmessage,\
-    Tk, TclError, Label, Button, time, pypresenceEnabled
+from PyLaddersAndSnakes.playermenu import (
+    PLAYERMENU,
+    find_data_file,
+    tkfont,
+    tkmessage,
+    Tk,
+    TclError,
+    Label,
+    Button,
+    time,
+    pypresenceEnabled,
+)
 
 
 class MAINMENU:
@@ -14,8 +24,7 @@ class MAINMENU:
         self.menu.title("PyLadders&Snakes")
         self.menu.geometry("600x600")
         try:
-            self.menu.iconbitmap(
-                find_data_file("images/snakes-and-ladders.ico"))
+            self.menu.iconbitmap(find_data_file("images/snakes-and-ladders.ico"))
         except TclError:
             tkmessage.showwarning("Attention", "Vous avez supprimé le logo !")
             pass
