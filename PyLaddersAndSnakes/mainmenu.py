@@ -1,8 +1,14 @@
-from PyLaddersAndSnakes.playermenu import *
+from PyLaddersAndSnakes.playermenu import PLAYERMENU, find_data_file, tkfont, tkmessage,\
+    Tk, TclError, Label, Button, time, pypresenceEnabled
 
 
 class MAINMENU:
     def __init__(self, pypresence):
+        """
+        fonction permettant d'initialiser un objet de la classe MAINMENU représentant
+        le menu principal
+        :param pypresence:
+        """
         self.pypresenceRPC = pypresence
         self.menu = Tk()
         self.menu.title("PyLadders&Snakes")
@@ -62,22 +68,28 @@ class MAINMENU:
         self.menu.mainloop()
 
     def quit(self):
+        """
+        fonction permettant de quitter la fenêtre du menu principal
+        :return:
+        """
         self.menu.destroy()
 
     def onBtClick(self, event):
+        """
+        fonction executé lors de l'appuie sur l'un des boutons pour rediriger vers
+        le mode avec le nombre de joueur(s) approprié(s)
+        :param event:
+        :return:
+        """
         if str(event.widget) == ".!button":
             self.quit()
-            playerscreen = PLAYERMENU(1, self.pypresenceRPC)
+            PLAYERMENU(1, self.pypresenceRPC)
         elif str(event.widget) == ".!button2":
             self.quit()
-            playerscreen = PLAYERMENU(2, self.pypresenceRPC)
+            PLAYERMENU(2, self.pypresenceRPC)
         elif str(event.widget) == ".!button3":
             self.quit()
-            playerscreen = PLAYERMENU(3, self.pypresenceRPC)
+            PLAYERMENU(3, self.pypresenceRPC)
         elif str(event.widget) == ".!button4":
             self.quit()
-            playerscreen = PLAYERMENU(4, self.pypresenceRPC)
-
-
-pypresence = CreatePyPresenceConnection()
-MAINMENU(pypresence)
+            PLAYERMENU(4, self.pypresenceRPC)

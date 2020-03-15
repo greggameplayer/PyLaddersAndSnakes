@@ -1,1 +1,0 @@
-from PyLaddersAndSnakes.mainmenu import *

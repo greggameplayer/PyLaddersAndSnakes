@@ -5,6 +5,12 @@ from PyLaddersAndSnakes.maingame import *
 
 class PLAYERMENU:
     def __init__(self, playerNumber, pypresence):
+        """
+        fonction permettant d'initialiser un objet de la classe PLAYERMENU représentant
+        le menu de personnalisation des/du joueur(s)
+        :param playerNumber:
+        :param pypresence:
+        """
         self.pypresenceRPC = pypresence
         self.menu = Tk()
         self.menu.title("Snakes & Ladders")
@@ -185,9 +191,20 @@ class PLAYERMENU:
         self.menu.mainloop()
 
     def quit(self):
+        """
+        fonction permettant de quitter la fenêtre du menu de personnalisation des/du
+        joueur(s)
+        :return:
+        """
         self.menu.destroy()
 
-    def onBtClick(self, event):
+    def onBtClick(self, _event):
+        """
+        fonction executé lors de l'appuie sur le bouton Valider permettant de rediriger
+        vers le jeu principal avec le(s) couleur(s) et le(s) nom(s) de joueur(s) approprié(s)
+        :param _event:
+        :return:
+        """
         if (self.playerNumber == 1 or self.playerNumber == 2
                 and self.varInput.get() != self.varInput2.get()
                 or self.playerNumber == 3
@@ -247,8 +264,8 @@ class PLAYERMENU:
                         self.varColor3,
                         self.varColor4,
                     ]
-                    game = MAINGAME(self.playerNumber, PlayerNames,
-                                    PlayerColors, self.pypresenceRPC)
+                    MAINGAME(self.playerNumber, PlayerNames, PlayerColors,
+                             self.pypresenceRPC)
                 else:
                     tkmessage.showerror(
                         "Erreur de couleur de joueur",
@@ -263,15 +280,34 @@ class PLAYERMENU:
                 "Veuillez choisir des noms de joueurs différents !",
             )
 
-    def onEnter(self, event):
+    def onEnter(self, _event):
+        """
+        fonction executé lors de l'entrée de la souris sur le bouton Valider permettant
+        de mettre la couleur de ce bouton en cyan
+        :param _event:
+        :return:
+        """
         self.submit["background"] = "cyan"
         self.submit["activebackground"] = "cyan"
 
-    def onLeave(self, event):
+    def onLeave(self, _event):
+        """
+        fonction executé lors de la sortie de la souris sur le bouton Valider
+        permettant de remettre la couleur initiale (bleu clair)
+        :param _event:
+        :return:
+        """
         self.submit["background"] = "lightblue"
         self.submit["activebackground"] = "lightblue"
 
     def onClickColor(self, event):
+        """
+        fonction executé lors de l'appuie sur les boutons de couleurs permettant
+        de rediriger vers un Tkinter AskColor qui renvoie la couleur demandé par le
+        joueur
+        :param event:
+        :return:
+        """
         if str(event.widget) == ".!button":
             colorchoosen = tkcolor.askcolor()[1]
             self.varColor1 = colorchoosen
