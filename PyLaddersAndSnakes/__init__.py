@@ -1,1 +1,1 @@
-from PyLaddersAndSnakes.main import *
+from PyLaddersAndSnakes.mainmenu import *
