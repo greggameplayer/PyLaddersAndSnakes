@@ -198,7 +198,7 @@ class MAINGAME:
     def genLevel(self):
         objects["snakes"] = []
         objects["ladders"] = []
-        for i in range(random.randint(3, 5)):
+        for i in range(random.randint(2, 3)):
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
@@ -211,7 +211,7 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["snakes"][i][j][0] = objects["simtab"][
                         objects["snakes"][i][j][0]]
-        for i in range(random.randint(3, 5)):
+        for i in range(random.randint(2, 3)):
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
