@@ -237,7 +237,8 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["ladders"][i][j][0] = objects["simtab"][
                         objects["ladders"][i][j][0]]
-        for elemsLadders in objects["ladders"]:  # vérification permettant d'interdire
+        # vérification permettant d'interdire
+        for elemsLadders in objects["ladders"]:
             for elem in elemsLadders:  # les échelles en direct contact
                 if objects["ladders"].count(elem) > 1:  # avec celle testée
                     self.genLevel()
@@ -274,7 +275,8 @@ class MAINGAME:
                         self.genLevel()
                         return
 
-        for elemsSnakes in objects["snakes"]:  # vérification permettant d'interdire
+        # vérification permettant d'interdire
+        for elemsSnakes in objects["snakes"]:
             for elem in elemsSnakes:  # les serpents en direct contact
                 if objects["snakes"].count(elem) > 1:  # avec celui testé
                     self.genLevel()
