@@ -1,4 +1,5 @@
-from PyLaddersAndSnakes.playermenu import *
+from PyLaddersAndSnakes.playermenu import PLAYERMENU, find_data_file, tkfont, tkmessage, Tk, TclError, Label, Button,\
+    time, pypresenceEnabled, CreatePyPresenceConnection
 
 
 class MAINMENU:
