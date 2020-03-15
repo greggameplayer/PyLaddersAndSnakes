@@ -1,10 +1,11 @@
+from cx_Freeze import setup, Executable
 from setuptools import setup, find_packages
 import sys
 import os
 os.system("py -m pip install --upgrade pip setuptools")
 os.system("py -m pip install -r requirements.txt")
-from cx_Freeze import setup, Executable
-build_exe_options = {"includes": ["pypresence", "simpleaudio"], "optimize": 2, 'include_files': [("resources", "resources")]}
+build_exe_options = {"includes": ["pypresence", "simpleaudio"],
+                     "optimize": 2, 'include_files': [("resources", "resources")]}
 
 base = None
 if sys.platform == 'win32':
