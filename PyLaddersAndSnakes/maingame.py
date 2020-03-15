@@ -161,23 +161,23 @@ class MAINGAME:
                     small_image="fourplayers",
                     small_text="Mode 4 joueurs !",
                 )
-        self.playerPositionGap = [[50], [56, 24], [46, 24, 36],
-                                  [46, 24, 46, 24]]
-        self.playerPositionGapY = [[50], [40, 40], [40, 40, 20],
-                                   [40, 40, 20, 20]]
-        self.playerPositionY = [
-            [[550, 590]],
+        self.playerPositionGap = [[50], [56, 24], [46, 24, 36],  # gap entre la position de la case et celle du joueur
+                                  [46, 24, 46, 24]]  # sur l'axe x
+        self.playerPositionGapY = [[50], [40, 40], [40, 40, 20],  # gap entre la position de la case et celle du joueur
+                                   [40, 40, 20, 20]]  # sur l'axe y
+        self.playerPositionY = [  # position minimum du joueur sur l'axe Y
+            [[550, 590]],  # ou peut aussi être sur le max de l'axe X
             [[544, 564], [576, 596]],
             [[554, 564], [576, 586], [564, 574]],
             [[554, 564], [576, 586], [554, 564], [576, 586]],
         ]
-        self.playerPositionX = [
-            [[10, 50]],
+        self.playerPositionX = [  # position minimum du joueur sur l'axe X
+            [[10, 50]],  # ou peut aussi être position minimum sur l'axe Y
             [[4, 24], [36, 56]],
             [[14, 24], [36, 46], [24, 34]],
             [[14, 24], [36, 46], [14, 24], [36, 46]],
         ]
-        self.playerPositionYMax = [
+        self.playerPositionYMax = [  # position du joueur maximum sur l'axe Y
             [[10, 50]],
             [[20, 40], [20, 40]],
             [[20, 30], [20, 30], [40, 50]],
@@ -211,7 +211,7 @@ class MAINGAME:
         """
         objects["snakes"] = []
         objects["ladders"] = []
-        for i in range(random.randint(2, 3)):
+        for i in range(random.randint(2, 3)):  # génération d'entre 2 et 3 serpents
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
@@ -224,7 +224,7 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["snakes"][i][j][0] = objects["simtab"][
                         objects["snakes"][i][j][0]]
-        for i in range(random.randint(2, 3)):
+        for i in range(random.randint(2, 3)):  # génération d'entre 2 et 3 échelles
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
@@ -237,9 +237,9 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["ladders"][i][j][0] = objects["simtab"][
                         objects["ladders"][i][j][0]]
-        for elemsLadders in objects["ladders"]:
-            for elem in elemsLadders:
-                if objects["ladders"].count(elem) > 1:
+        for elemsLadders in objects["ladders"]:  # vérification permettant d'interdire
+            for elem in elemsLadders:  # les échelles en direct contact
+                if objects["ladders"].count(elem) > 1:  # avec celle testée
                     self.genLevel()
                     return
                 else:
@@ -274,9 +274,9 @@ class MAINGAME:
                         self.genLevel()
                         return
 
-        for elemsSnakes in objects["snakes"]:
-            for elem in elemsSnakes:
-                if objects["snakes"].count(elem) > 1:
+        for elemsSnakes in objects["snakes"]:  # vérification permettant d'interdire
+            for elem in elemsSnakes:  # les serpents en direct contact
+                if objects["snakes"].count(elem) > 1:  # avec celui testé
                     self.genLevel()
                     return
                 else:
@@ -310,8 +310,8 @@ class MAINGAME:
                          and not tabExists(elemsSnakes, elem, -1, -1, True))):
                         self.genLevel()
                         return
-            for elems in objects["ladders"]:
-                for elem in elems:
+            for elems in objects["ladders"]:  # vérification permettant d'interdire
+                for elem in elems:  # le positionnement d'une échelle sur un serpent
                     for elems2 in objects["snakes"]:
                         for elem2 in elems2:
                             if isEquals(elem, elem2):
@@ -325,7 +325,7 @@ class MAINGAME:
         contenu dans les tableaux placés dans le dictionnaire objects
         :return:
         """
-        for i in range(len(objects["ladders"])):
+        for i in range(len(objects["ladders"])):  # placement des échelles
             if objects["ladders"][i][0][1] % 2 == 0:
                 objects["startLadders"].append([
                     objects["simtab"][objects["ladders"][i][0][0]],
@@ -350,7 +350,7 @@ class MAINGAME:
                     fill="green",
                 )
 
-        for i in range(len(objects["snakes"])):
+        for i in range(len(objects["snakes"])):  # placement des serpents
             if objects["snakes"][i][0][1] % 2 == 0:
                 objects["startSnakes"].append([
                     objects["simtab"][objects["snakes"][i][0][0]],
