@@ -224,77 +224,77 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["ladders"][i][j][0] = objects["simtab"][
                         objects["ladders"][i][j][0]]
-        for elems in objects["ladders"]:
-            for elem in elems:
+        for elemsLadders in objects["ladders"]:
+            for elem in elemsLadders:
                 if objects["ladders"].count(elem) > 1:
                     self.genLevel()
                     return
                 else:
                     if ((tabExists(objects["ladders"], elem, 0, 1, False)
-                         and not tabExists(elems, elem, 0, 1, False)) or
+                         and not tabExists(elemsLadders, elem, 0, 1, False)) or
                         (tabExists(objects["ladders"], elem, 1, 0, False)
-                         and not tabExists(elems, elem, 1, 0, False)) or
+                         and not tabExists(elemsLadders, elem, 1, 0, False)) or
                         (tabExists(objects["ladders"], elem, 1, 1, False)
-                         and not tabExists(elems, elem, 1, 1, False)) or
+                         and not tabExists(elemsLadders, elem, 1, 1, False)) or
                         (tabExists(objects["ladders"], elem, 0, -1, False)
-                         and not tabExists(elems, elem, 0, -1, False)) or
+                         and not tabExists(elemsLadders, elem, 0, -1, False)) or
                         (tabExists(objects["ladders"], elem, -1, 1, False)
-                         and not tabExists(elems, elem, -1, 1, False)) or
+                         and not tabExists(elemsLadders, elem, -1, 1, False)) or
                         (tabExists(objects["ladders"], elem, 1, -1, False)
-                         and not tabExists(elems, elem, 1, -1, False)) or
+                         and not tabExists(elemsLadders, elem, 1, -1, False)) or
                         (tabExists(objects["ladders"], elem, -1, 0, False)
-                         and not tabExists(elems, elem, -1, 0, False)) or
+                         and not tabExists(elemsLadders, elem, -1, 0, False)) or
                         (tabExists(objects["ladders"], elem, -1, -1, False)
-                         and not tabExists(elems, elem, -1, -1, False))
+                         and not tabExists(elemsLadders, elem, -1, -1, False))
                             or (tabExists(objects["ladders"], elem, 0, 1, True)
-                                and not tabExists(elems, elem, 0, 1, True))
+                                and not tabExists(elemsLadders, elem, 0, 1, True))
                             or (tabExists(objects["ladders"], elem, 1, 1, True)
-                                and not tabExists(elems, elem, 1, 1, True)) or
+                                and not tabExists(elemsLadders, elem, 1, 1, True)) or
                         (tabExists(objects["ladders"], elem, 0, -1, True)
-                         and not tabExists(elems, elem, 0, -1, True)) or
+                         and not tabExists(elemsLadders, elem, 0, -1, True)) or
                         (tabExists(objects["ladders"], elem, -1, 1, True)
-                         and not tabExists(elems, elem, -1, 1, True)) or
+                         and not tabExists(elemsLadders, elem, -1, 1, True)) or
                         (tabExists(objects["ladders"], elem, 1, -1, True)
-                         and not tabExists(elems, elem, 1, -1, True)) or
+                         and not tabExists(elemsLadders, elem, 1, -1, True)) or
                         (tabExists(objects["ladders"], elem, -1, -1, True)
-                         and not tabExists(elems, elem, -1, -1, True))):
+                         and not tabExists(elemsLadders, elem, -1, -1, True))):
                         self.genLevel()
                         return
 
-        for elems in objects["snakes"]:
-            for elem in elems:
+        for elemsSnakes in objects["snakes"]:
+            for elem in elemsSnakes:
                 if objects["snakes"].count(elem) > 1:
                     self.genLevel()
                     return
                 else:
                     if ((tabExists(objects["snakes"], elem, 0, 1, False)
-                         and not tabExists(elems, elem, 0, 1, False))
+                         and not tabExists(elemsSnakes, elem, 0, 1, False))
                             or (tabExists(objects["snakes"], elem, 1, 0, False)
-                                and not tabExists(elems, elem, 1, 0, False))
+                                and not tabExists(elemsSnakes, elem, 1, 0, False))
                             or (tabExists(objects["snakes"], elem, 1, 1, False)
-                                and not tabExists(elems, elem, 1, 1, False)) or
+                                and not tabExists(elemsSnakes, elem, 1, 1, False)) or
                         (tabExists(objects["snakes"], elem, 0, -1, False)
-                         and not tabExists(elems, elem, 0, -1, False)) or
+                         and not tabExists(elemsSnakes, elem, 0, -1, False)) or
                         (tabExists(objects["snakes"], elem, -1, 1, False)
-                         and not tabExists(elems, elem, -1, 1, False)) or
+                         and not tabExists(elemsSnakes, elem, -1, 1, False)) or
                         (tabExists(objects["snakes"], elem, 1, -1, False)
-                         and not tabExists(elems, elem, 1, -1, False)) or
+                         and not tabExists(elemsSnakes, elem, 1, -1, False)) or
                         (tabExists(objects["snakes"], elem, -1, 0, False)
-                         and not tabExists(elems, elem, -1, 0, False)) or
+                         and not tabExists(elemsSnakes, elem, -1, 0, False)) or
                         (tabExists(objects["snakes"], elem, -1, -1, False)
-                         and not tabExists(elems, elem, -1, -1, False))
+                         and not tabExists(elemsSnakes, elem, -1, -1, False))
                             or (tabExists(objects["snakes"], elem, 0, 1, True)
-                                and not tabExists(elems, elem, 0, 1, True))
+                                and not tabExists(elemsSnakes, elem, 0, 1, True))
                             or (tabExists(objects["snakes"], elem, 1, 1, True)
-                                and not tabExists(elems, elem, 1, 1, True))
+                                and not tabExists(elemsSnakes, elem, 1, 1, True))
                             or (tabExists(objects["snakes"], elem, 0, -1, True)
-                                and not tabExists(elems, elem, 0, -1, True))
+                                and not tabExists(elemsSnakes, elem, 0, -1, True))
                             or (tabExists(objects["snakes"], elem, -1, 1, True)
-                                and not tabExists(elems, elem, -1, 1, True))
+                                and not tabExists(elemsSnakes, elem, -1, 1, True))
                             or (tabExists(objects["snakes"], elem, 1, -1, True)
-                                and not tabExists(elems, elem, 1, -1, True)) or
+                                and not tabExists(elemsSnakes, elem, 1, -1, True)) or
                         (tabExists(objects["snakes"], elem, -1, -1, True)
-                         and not tabExists(elems, elem, -1, -1, True))):
+                         and not tabExists(elemsSnakes, elem, -1, -1, True))):
                         self.genLevel()
                         return
             for elems in objects["ladders"]:
