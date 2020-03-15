@@ -292,9 +292,9 @@ class MAINGAME:
                             or (tabExists(objects["snakes"], elem, -1, 1, True)
                                 and not tabExists(elems, elem, -1, 1, True))
                             or (tabExists(objects["snakes"], elem, 1, -1, True)
-                                and not tabExists(elems, elem, 1, -1, True))
-                            or (tabExists(objects["snakes"], elem, -1, -1, True)
-                                and not tabExists(elems, elem, -1, -1, True))):
+                                and not tabExists(elems, elem, 1, -1, True)) or
+                        (tabExists(objects["snakes"], elem, -1, -1, True)
+                         and not tabExists(elems, elem, -1, -1, True))):
                         self.genLevel()
                         return
             for elems in objects["ladders"]:

@@ -247,8 +247,8 @@ class PLAYERMENU:
                         self.varColor3,
                         self.varColor4,
                     ]
-                    MAINGAME(self.playerNumber, PlayerNames,
-                             PlayerColors, self.pypresenceRPC)
+                    MAINGAME(self.playerNumber, PlayerNames, PlayerColors,
+                             self.pypresenceRPC)
                 else:
                     tkmessage.showerror(
                         "Erreur de couleur de joueur",
