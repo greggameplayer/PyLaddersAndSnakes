@@ -161,10 +161,20 @@ class MAINGAME:
                     small_image="fourplayers",
                     small_text="Mode 4 joueurs !",
                 )
-        self.playerPositionGap = [[50], [56, 24], [46, 24, 36],  # gap entre la position de la case et celle du joueur
-                                  [46, 24, 46, 24]]  # sur l'axe x
-        self.playerPositionGapY = [[50], [40, 40], [40, 40, 20],  # gap entre la position de la case et celle du joueur
-                                   [40, 40, 20, 20]]  # sur l'axe y
+        self.playerPositionGap = [
+            [50],
+            [56, 24],
+            [46, 24,
+             36],  # gap entre la position de la case et celle du joueur
+            [46, 24, 46, 24],
+        ]  # sur l'axe x
+        self.playerPositionGapY = [
+            [50],
+            [40, 40],
+            [40, 40,
+             20],  # gap entre la position de la case et celle du joueur
+            [40, 40, 20, 20],
+        ]  # sur l'axe y
         self.playerPositionY = [  # position minimum du joueur sur l'axe Y
             [[550, 590]],  # ou peut aussi être sur le max de l'axe X
             [[544, 564], [576, 596]],
@@ -211,7 +221,8 @@ class MAINGAME:
         """
         objects["snakes"] = []
         objects["ladders"] = []
-        for i in range(random.randint(2, 3)):  # génération d'entre 2 et 3 serpents
+        for i in range(random.randint(
+                2, 3)):  # génération d'entre 2 et 3 serpents
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
@@ -224,7 +235,8 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["snakes"][i][j][0] = objects["simtab"][
                         objects["snakes"][i][j][0]]
-        for i in range(random.randint(2, 3)):  # génération d'entre 2 et 3 échelles
+        for i in range(random.randint(
+                2, 3)):  # génération d'entre 2 et 3 échelles
             x = random.randint(0, 9)
             y = random.randint(0, 5)
             while y == 0 and x == 0 or x == 1:
@@ -237,7 +249,8 @@ class MAINGAME:
                 if j % 2 == 1 and j != 0:
                     objects["ladders"][i][j][0] = objects["simtab"][
                         objects["ladders"][i][j][0]]
-        for elemsLadders in objects["ladders"]:  # vérification permettant d'interdire
+        # vérification permettant d'interdire
+        for elemsLadders in objects["ladders"]:
             for elem in elemsLadders:  # les échelles en direct contact
                 if objects["ladders"].count(elem) > 1:  # avec celle testée
                     self.genLevel()
@@ -250,19 +263,24 @@ class MAINGAME:
                         (tabExists(objects["ladders"], elem, 1, 1, False)
                          and not tabExists(elemsLadders, elem, 1, 1, False)) or
                         (tabExists(objects["ladders"], elem, 0, -1, False)
-                         and not tabExists(elemsLadders, elem, 0, -1, False)) or
+                         and not tabExists(elemsLadders, elem, 0, -1, False))
+                            or
                         (tabExists(objects["ladders"], elem, -1, 1, False)
-                         and not tabExists(elemsLadders, elem, -1, 1, False)) or
+                         and not tabExists(elemsLadders, elem, -1, 1, False))
+                            or
                         (tabExists(objects["ladders"], elem, 1, -1, False)
-                         and not tabExists(elemsLadders, elem, 1, -1, False)) or
+                         and not tabExists(elemsLadders, elem, 1, -1, False))
+                            or
                         (tabExists(objects["ladders"], elem, -1, 0, False)
-                         and not tabExists(elemsLadders, elem, -1, 0, False)) or
+                         and not tabExists(elemsLadders, elem, -1, 0, False))
+                            or
                         (tabExists(objects["ladders"], elem, -1, -1, False)
                          and not tabExists(elemsLadders, elem, -1, -1, False))
-                            or (tabExists(objects["ladders"], elem, 0, 1, True)
-                                and not tabExists(elemsLadders, elem, 0, 1, True))
-                            or (tabExists(objects["ladders"], elem, 1, 1, True)
-                                and not tabExists(elemsLadders, elem, 1, 1, True)) or
+                            or
+                        (tabExists(objects["ladders"], elem, 0, 1, True)
+                         and not tabExists(elemsLadders, elem, 0, 1, True)) or
+                        (tabExists(objects["ladders"], elem, 1, 1, True)
+                         and not tabExists(elemsLadders, elem, 1, 1, True)) or
                         (tabExists(objects["ladders"], elem, 0, -1, True)
                          and not tabExists(elemsLadders, elem, 0, -1, True)) or
                         (tabExists(objects["ladders"], elem, -1, 1, True)
@@ -274,18 +292,19 @@ class MAINGAME:
                         self.genLevel()
                         return
 
-        for elemsSnakes in objects["snakes"]:  # vérification permettant d'interdire
+        # vérification permettant d'interdire
+        for elemsSnakes in objects["snakes"]:
             for elem in elemsSnakes:  # les serpents en direct contact
                 if objects["snakes"].count(elem) > 1:  # avec celui testé
                     self.genLevel()
                     return
                 else:
                     if ((tabExists(objects["snakes"], elem, 0, 1, False)
-                         and not tabExists(elemsSnakes, elem, 0, 1, False))
-                            or (tabExists(objects["snakes"], elem, 1, 0, False)
-                                and not tabExists(elemsSnakes, elem, 1, 0, False))
-                            or (tabExists(objects["snakes"], elem, 1, 1, False)
-                                and not tabExists(elemsSnakes, elem, 1, 1, False)) or
+                         and not tabExists(elemsSnakes, elem, 0, 1, False)) or
+                        (tabExists(objects["snakes"], elem, 1, 0, False)
+                         and not tabExists(elemsSnakes, elem, 1, 0, False)) or
+                        (tabExists(objects["snakes"], elem, 1, 1, False)
+                         and not tabExists(elemsSnakes, elem, 1, 1, False)) or
                         (tabExists(objects["snakes"], elem, 0, -1, False)
                          and not tabExists(elemsSnakes, elem, 0, -1, False)) or
                         (tabExists(objects["snakes"], elem, -1, 1, False)
@@ -296,21 +315,23 @@ class MAINGAME:
                          and not tabExists(elemsSnakes, elem, -1, 0, False)) or
                         (tabExists(objects["snakes"], elem, -1, -1, False)
                          and not tabExists(elemsSnakes, elem, -1, -1, False))
-                            or (tabExists(objects["snakes"], elem, 0, 1, True)
-                                and not tabExists(elemsSnakes, elem, 0, 1, True))
-                            or (tabExists(objects["snakes"], elem, 1, 1, True)
-                                and not tabExists(elemsSnakes, elem, 1, 1, True))
-                            or (tabExists(objects["snakes"], elem, 0, -1, True)
-                                and not tabExists(elemsSnakes, elem, 0, -1, True))
-                            or (tabExists(objects["snakes"], elem, -1, 1, True)
-                                and not tabExists(elemsSnakes, elem, -1, 1, True))
-                            or (tabExists(objects["snakes"], elem, 1, -1, True)
-                                and not tabExists(elemsSnakes, elem, 1, -1, True)) or
+                            or
+                        (tabExists(objects["snakes"], elem, 0, 1, True)
+                         and not tabExists(elemsSnakes, elem, 0, 1, True)) or
+                        (tabExists(objects["snakes"], elem, 1, 1, True)
+                         and not tabExists(elemsSnakes, elem, 1, 1, True)) or
+                        (tabExists(objects["snakes"], elem, 0, -1, True)
+                         and not tabExists(elemsSnakes, elem, 0, -1, True)) or
+                        (tabExists(objects["snakes"], elem, -1, 1, True)
+                         and not tabExists(elemsSnakes, elem, -1, 1, True)) or
+                        (tabExists(objects["snakes"], elem, 1, -1, True)
+                         and not tabExists(elemsSnakes, elem, 1, -1, True)) or
                         (tabExists(objects["snakes"], elem, -1, -1, True)
                          and not tabExists(elemsSnakes, elem, -1, -1, True))):
                         self.genLevel()
                         return
-            for elems in objects["ladders"]:  # vérification permettant d'interdire
+            for elems in objects[
+                    "ladders"]:  # vérification permettant d'interdire
                 for elem in elems:  # le positionnement d'une échelle sur un serpent
                     for elems2 in objects["snakes"]:
                         for elem2 in elems2:
